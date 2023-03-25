@@ -27,23 +27,27 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	UPROPERTY(EditAnywhere, Category="Camera")
-	class USpringArmComponent* SpringArm;
-	UPROPERTY(EditAnywhere, Category="Camera")
-	class UCameraComponent* CameraComponent;
-
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputMappingContext* IMC_Player;
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* IA_Move;
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* IA_Turn;
+	UPROPERTY(EditAnywhere, Category = "Input")
+	class UInputAction* IA_Bomb;
 
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	TSubclassOf<class ABomb> BombFactory;
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	class ABomb* Bomb;
+
+	UPROPERTY()
+	TArray<class AGridTile*> GridTiles;
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
-	void Turn(const FInputActionValue& Value);
+	void SpawnBomb();
 
+	UFUNCTION()
+		class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
 };

@@ -11,8 +11,16 @@ class ACrazyArcadeGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	ACrazyArcadeGameMode();
+
+	UPROPERTY(EditAnywhere, Category="Camera")
+	TSubclassOf<class ACameraActor> CameraFactory;
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	class AMainCamera* MainCamera;
 };
 
 
