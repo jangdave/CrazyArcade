@@ -15,6 +15,12 @@ class CRAZYARCADE_API UBombEffect_Niagara : public UNiagaraComponent
 	GENERATED_BODY()
 
 public:
+	UBombEffect_Niagara();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	UPROPERTY(EditAnywhere, Category="Bomb")
 	class UBoxComponent* BoxCollision;
 

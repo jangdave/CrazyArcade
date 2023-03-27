@@ -39,6 +39,9 @@ public:
 	TSubclassOf<class ABomb> BombFactory;
 	UPROPERTY(EditAnywhere, Category="Bomb")
 	class ABomb* Bomb;
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	TSubclassOf<class AStunBomb> StunBombFactory;
+	class AStunBomb* StunBomb;
 
 	UPROPERTY()
 	TArray<class AGridTile*> GridTiles;
@@ -47,7 +50,11 @@ public:
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
 	void SpawnBomb();
+	UFUNCTION()
+	void Stun();
+	UFUNCTION()
+	void SpawnStunBomb();
 
 	UFUNCTION()
-		class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
+	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
 };

@@ -27,8 +27,18 @@ public:
 	class USphereComponent* SphereCollision;
 	UPROPERTY(EditAnywhere, Category="Bomb")
 	class UStaticMeshComponent* MeshComponent;
-
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	class UNiagaraComponent* BombParticlesVertical;
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	class UBoxComponent* BombCollisionVertical;
+	UPROPERTY(EditAnywhere, Category="Bomb")
+	class UNiagaraComponent* BombParticlesHorizontal;
+	UPROPERTY(EditAnywhere, Category = "Bomb")
+	class UBoxComponent* BombCollisionHorizontal;
 
 	UFUNCTION()
 	void Pop();
+
+	UFUNCTION()
+	void OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

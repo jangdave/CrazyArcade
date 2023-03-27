@@ -9,6 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "GridTile.h"
 #include "EngineUtils.h"
+#include "StunBomb.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ACrazyArcadePlayer::ACrazyArcadePlayer()
@@ -93,6 +95,21 @@ void ACrazyArcadePlayer::SpawnBomb()
 	float distnaceToNearest = 0.f;
 	AGridTile* NearestTile = FindNearstTile(GetActorLocation(), GridTiles, distnaceToNearest);
 	GetWorld()->SpawnActor<ABomb>(BombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());
+}
+
+void ACrazyArcadePlayer::Stun()
+{
+
+}
+
+void ACrazyArcadePlayer::SpawnStunBomb()
+{
+	float distnaceToNearest = 0.f;
+	AGridTile* NearestTile = FindNearstTile(GetActorLocation(), GridTiles, distnaceToNearest);
+	StunBomb = GetWorld()->SpawnActor<AStunBomb>(StunBombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());
+	AttachToActor(StunBomb, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	UnPossessed();
+	GetCharacterMovement()->StopMovementImmediately();
 }
 
 AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGridTile*>& TilesToCheck, float& Distance)
