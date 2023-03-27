@@ -23,8 +23,6 @@ void ADestroyBox::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle time;
-	GetWorldTimerManager().SetTimer(time, this, &ADestroyBox::DestroyBox, 3, false);
 }
 
 // Called every frame
