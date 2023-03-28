@@ -55,6 +55,28 @@ void UCrazyGameInstance::CreateMySession(FString roomName, int32 playerCount)
 	}
 }
 
+void UCrazyGameInstance::FindMySession()
+{
+	// 찾으려는 세션 쿼리를 생성
+	sesSearch = MakeShareable(new FOnlineSessionSearch());
+
+	sesSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+	sesSearch->MaxSearchResults = 30;
+
+	// presence로 생성된 세션을 필터링
+	sesSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+	// 앞에서 만든 쿼리를 이용해서 세션을 찾는다
+	sesInterface->FindSessions(0, sesSearch.ToSharedRef());
+}
+
+void UCrazyGameInstance::JoinMySession(int32 sessionIdx)
+{
+	FOnlineSessionSearchResult selectedSession = sesSearch->SearchResults[sessionIdx];
+
+	sesInterface->JoinSession(0, sessionID, selectedSession);
+}
+
 void UCrazyGameInstance::CreateSessionComplete(FName sessionName, bool bSuccess)
 {
 	FString result = bSuccess ? TEXT("create session success") : TEXT("create session failed");
@@ -63,7 +85,7 @@ void UCrazyGameInstance::CreateSessionComplete(FName sessionName, bool bSuccess)
 
 	if(bSuccess)
 	{
-		GetWorld()->ServerTravel("/Game/Maps/MainLevel?Listen");
+		bIsSuccess = true;
 	}
 }
 
@@ -77,12 +99,47 @@ void UCrazyGameInstance::FindSessionComplete(bool bSuccess)
 
 		for(int32 i = 0; i<searchResults.Num(); i++)
 		{
-			//FSessionInfo searchedSessionInfo;
+			FSessionInfo searchedSessionInfo;
+
+			FString roomName;
+			searchResults[i].Session.SessionSettings.Get(FName("KEY_RoomName"), roomName);
+			searchedSessionInfo.roomName = roomName;
+
+			int32 maxPlayers = searchResults[i].Session.SessionSettings.NumPublicConnections;
+			searchedSessionInfo.maxPlayers = maxPlayers;
+
+			int32 currentPlayers = maxPlayers - searchResults[i].Session.NumOpenPublicConnections;
+			searchedSessionInfo.currentPlayers = currentPlayers;
+
+			int32 ping = searchResults[i].PingInMs;
+			searchedSessionInfo.ping = ping;
+
+			searchedSessionInfo.idx = i;
+
+			ResultDele.Broadcast(searchedSessionInfo);
 		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Find Sessions Failed..."));
+	}
+
+	FinishedDele.Broadcast();
 }
 
 void UCrazyGameInstance::JoinSessionComplete(FName sessionName, EOnJoinSessionCompleteResult::Type joinResult)
 {
+	if(joinResult == EOnJoinSessionCompleteResult::Success)
+	{
+		FString joinAddress;
 
+		sesInterface->GetResolvedConnectString(sessionName, joinAddress);
+
+		UE_LOG(LogTemp, Warning, TEXT("join address : %s"), *joinAddress)
+
+		if (APlayerController* pc = GetWorld()->GetFirstPlayerController())
+		{
+			pc->ClientTravel(joinAddress, ETravelType::TRAVEL_Absolute);
+		}
+	}
 }

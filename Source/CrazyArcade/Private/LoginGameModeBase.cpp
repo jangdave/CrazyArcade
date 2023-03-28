@@ -3,6 +3,7 @@
 
 #include "LoginGameModeBase.h"
 #include "GameStartWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 ALoginGameModeBase::ALoginGameModeBase()
 {
@@ -16,4 +17,6 @@ void ALoginGameModeBase::BeginPlay()
 	gameStart_UI = CreateWidget<UGameStartWidget>(GetWorld(), gameStartWidget);
 
 	gameStart_UI->AddToViewport();
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
 }
