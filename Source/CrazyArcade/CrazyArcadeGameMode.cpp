@@ -8,6 +8,16 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
 
+ACrazyArcadeGameMode::ACrazyArcadeGameMode()
+{
+	// set default pawn class to our Blueprinted character
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
+	if (PlayerPawnBPClass.Class != NULL)
+	{
+		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
+
 void ACrazyArcadeGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,15 +29,5 @@ void ACrazyArcadeGameMode::BeginPlay()
 	if(PlayerController)
 	{
 		PlayerController->SetViewTarget(MainCamera);
-	}
-}
-
-ACrazyArcadeGameMode::ACrazyArcadeGameMode()
-{
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
