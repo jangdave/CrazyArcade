@@ -30,4 +30,11 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* text_Ping;
 
+	UPROPERTY()
+	int32 index;
+
+	class UCrazyGameInstance* gameInstance;
+
+	UFUNCTION()
+	void JoinRoom();
 };
