@@ -23,7 +23,7 @@ void ACrazyArcadeGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(1500.f, 1750.f, 2500.f), FRotator(-90.f, 0.f, 0.f));
+	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
 	auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if(PlayerController)
