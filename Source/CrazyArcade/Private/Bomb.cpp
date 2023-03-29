@@ -4,6 +4,8 @@
 #include "Bomb.h"
 
 #include "CrazyArcadePlayer.h"
+#include "DestroyBox.h"
+#include "FixBox.h"
 #include "NiagaraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
@@ -27,14 +29,17 @@ ABomb::ABomb()
 
 	BombCollisionVertical = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Vertical"));
 	BombCollisionVertical->SetupAttachment(BombParticlesVertical);
-	BombCollisionVertical->SetBoxExtent(FVector(40.f, 150.f, 45.f));
+	BombCollisionVertical->SetBoxExtent(FVector(40.f, 140.f, 45.f));
+	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	BombParticlesHorizontal = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Horizontal"));
 	BombParticlesHorizontal->SetupAttachment(RootComponent);
 
 	BombCollisionHorizontal = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Horizontal"));
 	BombCollisionHorizontal->SetupAttachment(BombParticlesHorizontal);
-	BombCollisionHorizontal->SetBoxExtent(FVector(40.f, 150.f, 45.f));
+	BombCollisionHorizontal->SetBoxExtent(FVector(40.f, 140.f, 45.f));
+	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 }
 
@@ -53,7 +58,6 @@ void ABomb::BeginPlay()
 			Destroy();
 		}
 	), 3.f, false, 3.f);
-	
 }
 
 // Called every frame
@@ -67,19 +71,32 @@ void ABomb::Pop()
 {
 	BombParticlesVertical->Activate(true);
 	BombCollisionHorizontal->Activate(true);
+	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void ABomb::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stun"));
-
 	auto player = Cast<ACrazyArcadePlayer>(OtherActor);
-	if(player == nullptr)
+	auto destroyBox = Cast<ADestroyBox>(OtherActor);
+	auto fixBox = Cast<AFixBox>(OtherActor);
+
+	if(player != nullptr)
 	{
-		return;
+		player->SetActorLocation(SweepResult.Location);
+		player->SpawnStunBomb();
 	}
 
-	player->SetActorLocation(GetActorLocation());
-	player->SpawnStunBomb();
+	if(destroyBox != nullptr)
+	{
+		destroyBox->DestroyBox();
+	}
+
+	if(fixBox != nullptr)
+	{
+		
+	}
+
+	
 }
