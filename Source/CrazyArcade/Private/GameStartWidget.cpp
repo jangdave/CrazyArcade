@@ -117,3 +117,8 @@ void UGameStartWidget::RefreshList()
 
 	btn_RefreshRoom->SetIsEnabled(false);
 }
+
+void UGameStartWidget::InLobby()
+{
+	widgetSwitcher->SetActiveWidgetIndex(3);
+}

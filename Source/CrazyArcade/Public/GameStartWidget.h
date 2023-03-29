@@ -128,4 +128,7 @@ public:
 
 	UFUNCTION()
 	void RefreshList();
+
+	UFUNCTION()
+	void InLobby();
 };
