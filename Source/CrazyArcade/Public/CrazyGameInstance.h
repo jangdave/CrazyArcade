@@ -26,6 +26,8 @@ struct FSessionInfo
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSearchResult, FSessionInfo, sessionInfo);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRoomSlot, FString, playerName);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSearchFinished);
 
 UCLASS()
@@ -47,6 +49,8 @@ public:
 	FOnSearchResult ResultDele;
 
 	FOnSearchFinished FinishedDele;
+
+	FRoomSlot RoomSlotInfo;
 
 	UPROPERTY()
 	bool bIsSuccess;

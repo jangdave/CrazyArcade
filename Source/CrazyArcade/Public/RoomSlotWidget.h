@@ -35,6 +35,11 @@ public:
 
 	class UCrazyGameInstance* gameInstance;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UGameStartWidget> startWidget;
+
+	class UGameStartWidget* startWid;
+
 	UFUNCTION()
 	void JoinRoom();
 };
