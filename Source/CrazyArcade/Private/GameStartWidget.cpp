@@ -36,9 +36,8 @@ void UGameStartWidget::NativeConstruct()
 	btn_CreateLobby->OnClicked.AddDynamic(this, &UGameStartWidget::CreateLobby);
 	sl_PlayerCount->OnValueChanged.AddDynamic(this, &UGameStartWidget::MoveSlide);
 	btn_BackCreateRoom->OnClicked.AddDynamic(this, &UGameStartWidget::BackCreateRoom);
-	btn_BackLobby->OnClicked.AddDynamic(this, &UGameStartWidget::BackLobby);
 	btn_RefreshRoom->OnClicked.AddDynamic(this, &UGameStartWidget::RefreshList);
-	btn_StartGame->OnClicked.AddDynamic(this, &UGameStartWidget::StartLevel);
+	
 }
 
 void UGameStartWidget::ClickStartGame()

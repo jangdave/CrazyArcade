@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GameStartWidget.generated.h"
+#include "LobbyWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRAZYARCADE_API UGameStartWidget : public UUserWidget
+class CRAZYARCADE_API ULobbyWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -18,77 +18,44 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	// 로비 페이지
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UWidgetSwitcher* widgetSwitcher;
-
-	// 로그인 페이지
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UEditableText* editText_ID;
+	class UHorizontalBox* horizonBox_PlayerList1;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Login;
-
-	// 룸리스트 페이지
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UScrollBox* sbox_RoomList;
+	class UHorizontalBox* horizonBox_PlayerList2;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_CreateRoom;
+	class UButton* btn_BackLobby;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_RefreshRoom;
-
-	// 방생성 페이지
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UEditableText* editText_RoomName;
+	class UButton* btn_ReadyGame;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_BackCreateRoom;
+	class UButton* btn_StartGame;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_CreateLobby;
+	class UButton* btn_Blue;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class USlider* sl_PlayerCount;
+	class UButton* btn_Green;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* text_PlayerCount;
-	
-	class UCrazyGameInstance* gameInstance;
+	class UButton* btn_Yellow;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class URoomSlotWidget> roomWidget;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Red;
 
-	UFUNCTION()
-	void ClickStartGame();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Pink;
 
-	UFUNCTION()
-	void CreateGameRoom();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Orange;
 
-	UFUNCTION()
-	void CreateLobby();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Indigo;
 
-	UFUNCTION()
-	void MoveSlide(float value);
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Black;
 
-	UFUNCTION()
-	void BackCreateRoom();
-
-	UFUNCTION()
-	void BackLobby();
-
-	UFUNCTION()
-	void AddNewSlot(FSessionInfo sessionInfo);
-
-	UFUNCTION()
-	void RefreshEnabled();
-
-	UFUNCTION()
-	void StartLevel();
-
-	UFUNCTION()
-	void RefreshList();
-
-	UFUNCTION()
-	void InLobby();
 };

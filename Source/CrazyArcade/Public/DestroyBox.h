@@ -29,8 +29,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Component")
 	class UStaticMeshComponent* meshComp;
 
-	UFUNCTION()
+	UFUNCTION(Server, Unreliable)
 	void DestroyBox();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MultiDestroyBox();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Emitter")
 	class UParticleSystem* destroyEmitter;

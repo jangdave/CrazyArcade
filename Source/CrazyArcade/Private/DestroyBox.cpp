@@ -32,9 +32,14 @@ void ADestroyBox::Tick(float DeltaTime)
 
 }
 
-void ADestroyBox::DestroyBox()
+void ADestroyBox::DestroyBox_Implementation()
 {
 	this->Destroy();
+	MultiDestroyBox();
+}
+
+void ADestroyBox::MultiDestroyBox_Implementation()
+{
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), destroyEmitter, GetActorLocation());
 }
 
