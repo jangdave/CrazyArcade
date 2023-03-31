@@ -75,16 +75,10 @@ public:
 	void BackCreateRoom();
 
 	UFUNCTION()
-	void BackLobby();
-
-	UFUNCTION()
 	void AddNewSlot(FSessionInfo sessionInfo);
 
 	UFUNCTION()
 	void RefreshEnabled();
-
-	UFUNCTION()
-	void StartLevel();
 
 	UFUNCTION()
 	void RefreshList();

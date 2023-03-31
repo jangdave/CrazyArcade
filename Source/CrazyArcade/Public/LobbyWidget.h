@@ -58,4 +58,35 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Black;
 
+	UFUNCTION()
+	void StartLevel();
+
+	UFUNCTION()
+	void BackLobby();
+
+	// 색상 선택 함수
+	UFUNCTION()
+	void SetColorBlue();
+
+	UFUNCTION()
+	void SetColorGreen();
+
+	UFUNCTION()
+	void SetColorYellow();
+
+	UFUNCTION()
+	void SetColorRed();
+
+	UFUNCTION()
+	void SetColorPink();
+
+	UFUNCTION()
+	void SetColorOrange();
+
+	UFUNCTION()
+	void SetColorIndigo();
+
+	UFUNCTION()
+	void SetColorBlack();
+
 };
