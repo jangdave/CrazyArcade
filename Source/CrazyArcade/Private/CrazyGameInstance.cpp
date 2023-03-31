@@ -4,6 +4,7 @@
 #include "CrazyGameInstance.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
+#include "Net/UnrealNetwork.h"
 
 UCrazyGameInstance::UCrazyGameInstance()
 {
@@ -142,4 +143,11 @@ void UCrazyGameInstance::JoinSessionComplete(FName sessionName, EOnJoinSessionCo
 			pc->ClientTravel(joinAddress, ETravelType::TRAVEL_Absolute);
 		}
 	}
+}
+
+void UCrazyGameInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCrazyGameInstance, sessionID);
 }

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "LoginGameModeBase.generated.h"
+#include "StartGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRAZYARCADE_API ALoginGameModeBase : public AGameModeBase
+class CRAZYARCADE_API AStartGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
@@ -19,8 +19,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UGameStartWidget> gameStartWidget;
-	
-	UPROPERTY()
-	class UGameStartWidget* gameStart_UI;
+	TSubclassOf<class AStartWidgetController> controllerWid;
+
+	//TArray<AStartWidgetController> controller;
 };

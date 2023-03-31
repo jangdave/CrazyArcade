@@ -42,4 +42,7 @@ public:
 
 	UFUNCTION()
 	void JoinRoom();
+
+	UFUNCTION(Client, Unreliable)
+	void Join();
 };

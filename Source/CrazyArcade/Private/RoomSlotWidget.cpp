@@ -5,6 +5,7 @@
 #include "CrazyGameInstance.h"
 #include "Components/Button.h"
 #include "GameStartWidget.h"
+#include "Components/WidgetSwitcher.h"
 #include "GameFramework/GameStateBase.h"
 
 void URoomSlotWidget::NativeConstruct()
@@ -23,7 +24,13 @@ void URoomSlotWidget::JoinRoom()
 	if(gameInstance != nullptr)
 	{
 		gameInstance->JoinMySession(index);
-
-		//GetWorld()->GetGameInstance()->
+		startWid->widgetSwitcher->SetActiveWidgetIndex(3);
+		//Join();
 	}
+}
+
+void URoomSlotWidget::Join_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("sssssssssssss"));
+	startWid->widgetSwitcher->SetActiveWidgetIndex(3);
 }

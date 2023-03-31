@@ -26,8 +26,6 @@ struct FSessionInfo
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSearchResult, FSessionInfo, sessionInfo);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRoomSlot, FString, playerName);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSearchFinished);
 
 UCLASS()
@@ -42,6 +40,7 @@ public:
 
 	IOnlineSessionPtr sesInterface;
 
+	UPROPERTY(Replicated)
 	FName sessionID;
 
 	TSharedPtr<FOnlineSessionSearch> sesSearch;
@@ -49,8 +48,6 @@ public:
 	FOnSearchResult ResultDele;
 
 	FOnSearchFinished FinishedDele;
-
-	FRoomSlot RoomSlotInfo;
 
 	UPROPERTY()
 	bool bIsSuccess;
@@ -68,4 +65,6 @@ public:
 	void FindSessionComplete(bool bSuccess);
 
 	void JoinSessionComplete(FName sessionName, EOnJoinSessionCompleteResult::Type joinResult);
+
+	FORCEINLINE FName GetName() { return sessionID; };
 };

@@ -36,9 +36,8 @@ void UGameStartWidget::NativeConstruct()
 	btn_CreateLobby->OnClicked.AddDynamic(this, &UGameStartWidget::CreateLobby);
 	sl_PlayerCount->OnValueChanged.AddDynamic(this, &UGameStartWidget::MoveSlide);
 	btn_BackCreateRoom->OnClicked.AddDynamic(this, &UGameStartWidget::BackCreateRoom);
-	btn_BackLobby->OnClicked.AddDynamic(this, &UGameStartWidget::BackLobby);
 	btn_RefreshRoom->OnClicked.AddDynamic(this, &UGameStartWidget::RefreshList);
-	btn_StartGame->OnClicked.AddDynamic(this, &UGameStartWidget::StartLevel);
+	
 }
 
 void UGameStartWidget::ClickStartGame()
@@ -46,7 +45,9 @@ void UGameStartWidget::ClickStartGame()
 	if(editText_ID->GetText().IsEmpty() != true)
 	{
 		widgetSwitcher->SetActiveWidgetIndex(1);
-		
+
+		RefreshList();
+
 		gameInstance->sessionID = FName(*editText_ID->GetText().ToString());
 	}
 }
@@ -64,7 +65,7 @@ void UGameStartWidget::CreateLobby()
 
 	if(gameInstance->bIsSuccess != false)
 	{
-		widgetSwitcher->SetActiveWidgetIndex(3);
+		GetWorld()->ServerTravel("/Game/Maps/StartMap?Listen");
 	}
 }
 
@@ -77,11 +78,6 @@ void UGameStartWidget::MoveSlide(float value)
 void UGameStartWidget::BackCreateRoom()
 {
 	widgetSwitcher->SetActiveWidgetIndex(1);
-}
-
-void UGameStartWidget::BackLobby()
-{
-	//widgetSwitcher->SetActiveWidgetIndex(1);
 }
 
 void UGameStartWidget::AddNewSlot(FSessionInfo sessionInfo)
@@ -102,11 +98,6 @@ void UGameStartWidget::AddNewSlot(FSessionInfo sessionInfo)
 void UGameStartWidget::RefreshEnabled()
 {
 	btn_RefreshRoom->SetIsEnabled(true);
-}
-
-void UGameStartWidget::StartLevel()
-{
-	GetWorld()->ServerTravel("/Game/Maps/MainLevel?Listen");
 }
 
 void UGameStartWidget::RefreshList()

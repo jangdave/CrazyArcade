@@ -5,11 +5,6 @@
 #include "GameStartWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-ALoginGameModeBase::ALoginGameModeBase()
-{
-
-}
-
 void ALoginGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
