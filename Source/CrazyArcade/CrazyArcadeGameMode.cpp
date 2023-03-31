@@ -3,10 +3,12 @@
 #include "CrazyArcadeGameMode.h"
 #include "CrazyArcadeCharacter.h"
 #include "MainCamera.h"
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
+#include "InGameWidget.h"
 
 ACrazyArcadeGameMode::ACrazyArcadeGameMode()
 {
@@ -22,7 +24,7 @@ void ACrazyArcadeGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	/*MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
 	auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -30,4 +32,9 @@ void ACrazyArcadeGameMode::BeginPlay()
 	{
 		PlayerController->SetViewTarget(MainCamera);
 	}
+
+	InGameWidget = CreateWidget<UInGameWidget>(GetWorld(), InGameWidgetFactory);
+	InGameWidget->AddToViewport();
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);*/
+
 }

@@ -6,6 +6,7 @@
 #include "CrazyArcadePlayer.h"
 #include "DestroyBox.h"
 #include "FixBox.h"
+#include "GridTile.h"
 #include "NiagaraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
@@ -26,19 +27,23 @@ ABomb::ABomb()
 
 	BombParticlesVertical = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Vertical"));
 	BombParticlesVertical->SetupAttachment(RootComponent);
+	// BombParticlesVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	BombCollisionVertical = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Vertical"));
 	BombCollisionVertical->SetupAttachment(BombParticlesVertical);
 	BombCollisionVertical->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BombParticlesVertical->Activate(false);
 
 	BombParticlesHorizontal = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Horizontal"));
 	BombParticlesHorizontal->SetupAttachment(RootComponent);
+	// BombParticlesHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	BombCollisionHorizontal = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Horizontal"));
 	BombCollisionHorizontal->SetupAttachment(BombParticlesHorizontal);
 	BombCollisionHorizontal->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BombCollisionHorizontal->Activate(false);
 
 
 }
@@ -70,7 +75,7 @@ void ABomb::Tick(float DeltaTime)
 void ABomb::Pop()
 {
 	BombParticlesVertical->Activate(true);
-	BombCollisionHorizontal->Activate(true);
+	BombParticlesHorizontal->Activate(true);
 	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
@@ -84,7 +89,9 @@ void ABomb::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 
 	if(player != nullptr)
 	{
-		player->SetActorLocation(SweepResult.Location);
+		float dist = 0.f;
+		FVector stunLocation = player->FindNearstTile(player->GetActorLocation(), player->GridTiles, dist)->GetActorLocation();
+		player->SetActorLocation(stunLocation);
 		player->SpawnStunBomb();
 	}
 

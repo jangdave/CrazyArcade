@@ -27,12 +27,12 @@ public:
 	class USphereComponent* SphereCollision;
 	UPROPERTY(EditAnywhere, Category="Bomb")
 	class UStaticMeshComponent* MeshComponent;
-	UPROPERTY(EditAnywhere, Category="Bomb")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bomb")
 	class UNiagaraComponent* BombParticlesVertical;
 	UPROPERTY(EditAnywhere, Category="Bomb")
 	class UBoxComponent* BombCollisionVertical;
-	UPROPERTY(EditAnywhere, Category="Bomb")
-	class UNiagaraComponent* BombParticlesHorizontal;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Bomb")
+	class UNiagaraComponent*  BombParticlesHorizontal;
 	UPROPERTY(EditAnywhere, Category = "Bomb")
 	class UBoxComponent* BombCollisionHorizontal;
 

@@ -1,13 +1,16 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "CrazyArcadeGameMode.generated.h"
+#include "GameFramework/PlayerController.h"
+#include "CrazyArcadePlayerController.generated.h"
 
-UCLASS(minimalapi)
-class ACrazyArcadeGameMode : public AGameModeBase
+/**
+ * 
+ */
+UCLASS()
+class CRAZYARCADE_API ACrazyArcadePlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
@@ -15,9 +18,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	ACrazyArcadeGameMode();
-
-	UPROPERTY(EditAnywhere, Category="Camera")
+	UPROPERTY(EditAnywhere, Category = "Camera")
 	TSubclassOf<class ACameraActor> CameraFactory;
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	class AMainCamera* MainCamera;
@@ -26,6 +27,3 @@ public:
 	UPROPERTY()
 	class UInGameWidget* InGameWidget;
 };
-
-
-

@@ -110,6 +110,11 @@ void ACrazyArcadePlayer::SpawnStunBomb()
 	AttachToActor(StunBomb, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	UnPossessed();
 	GetCharacterMovement()->StopMovementImmediately();
+	FTimerHandle dieHandle;
+	GetWorldTimerManager().SetTimer(dieHandle, FTimerDelegate::CreateLambda([&]()->void
+	{
+		Destroy();
+	}), 3.f, false, 3.f);
 }
 
 AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGridTile*>& TilesToCheck, float& Distance)
