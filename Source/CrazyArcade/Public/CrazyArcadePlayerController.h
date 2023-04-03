@@ -17,11 +17,11 @@ class CRAZYARCADE_API ACrazyArcadePlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	TSubclassOf<class ACameraActor> CameraFactory;
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	class AMainCamera* MainCamera;
+//public:
+//	UPROPERTY(EditAnywhere, Category = "Camera")
+//	TSubclassOf<class ACameraActor> CameraFactory;
+//	UPROPERTY(EditAnywhere, Category = "Camera")
+//	class AMainCamera* MainCamera;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UInGameWidget> InGameWidgetFactory;
 	UPROPERTY()

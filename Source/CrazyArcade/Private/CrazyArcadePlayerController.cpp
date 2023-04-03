@@ -12,13 +12,15 @@ void ACrazyArcadePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	/*MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	UE_LOG(LogTemp, Warning, TEXT("Camera"));
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
 
-
-	SetViewTarget(MainCamera);
-
+	if(IsLocalController())
+	{
+		SetViewTarget(MainCamera);
+	}*/
 
 	InGameWidget = CreateWidget<UInGameWidget>(GetWorld(), InGameWidgetFactory);
 	if(InGameWidget && IsLocalController())

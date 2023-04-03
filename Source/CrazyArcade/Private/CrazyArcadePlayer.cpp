@@ -4,11 +4,13 @@
 #include "CrazyArcadePlayer.h"
 
 #include "Bomb.h"
+#include "CrazyArcadePlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
 #include "GridTile.h"
 #include "EngineUtils.h"
+#include "MainCamera.h"
 #include "StunBomb.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -32,7 +34,12 @@ void ACrazyArcadePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if(PlayerController->IsLocalController())
+	{
+		PlayerController->SetOwner(this);
+	}
 
 	if(PlayerController)
 	{
@@ -47,6 +54,13 @@ void ACrazyArcadePlayer::BeginPlay()
 				InputSubsystem->AddMappingContext(IMC_Player, 0);
 			}
 		}
+	}
+
+	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
+	if(MainCamera)
+	{
+		ServerSpawnCamera();
 	}
 
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
@@ -143,3 +157,16 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	return NearestTile;
 }
 
+void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
+{
+	if (MainCamera)
+	{
+		PlayerController->SetViewTarget(MainCamera);
+		UE_LOG(LogTemp, Warning, TEXT("Multicast Camera"));
+	}
+}
+
+void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
+{
+	MulticastSpawnCamera();
+}

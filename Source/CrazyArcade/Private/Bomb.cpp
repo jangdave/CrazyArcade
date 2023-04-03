@@ -27,23 +27,19 @@ ABomb::ABomb()
 
 	BombParticlesVertical = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Vertical"));
 	BombParticlesVertical->SetupAttachment(RootComponent);
-	// BombParticlesVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	BombCollisionVertical = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Vertical"));
 	BombCollisionVertical->SetupAttachment(BombParticlesVertical);
 	BombCollisionVertical->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BombParticlesVertical->Activate(false);
 
 	BombParticlesHorizontal = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Horizontal"));
 	BombParticlesHorizontal->SetupAttachment(RootComponent);
-	// BombParticlesHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	BombCollisionHorizontal = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Horizontal"));
 	BombCollisionHorizontal->SetupAttachment(BombParticlesHorizontal);
 	BombCollisionHorizontal->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BombCollisionHorizontal->Activate(false);
 
 
 }
@@ -55,6 +51,9 @@ void ABomb::BeginPlay()
 
 	BombCollisionVertical->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBombPopBeginOverlap);
 	BombCollisionHorizontal->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBombPopBeginOverlap);
+
+	BombParticlesVertical->Activate(true);
+	BombParticlesHorizontal->Activate(true);
 
 	FTimerHandle BombHandle;
 	GetWorldTimerManager().SetTimer(BombHandle, FTimerDelegate::CreateLambda([this]()->void

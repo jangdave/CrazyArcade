@@ -43,6 +43,11 @@ public:
 	TSubclassOf<class AStunBomb> StunBombFactory;
 	class AStunBomb* StunBomb;
 
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	TSubclassOf<class ACameraActor> CameraFactory;
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	class AMainCamera* MainCamera;
+
 	UPROPERTY()
 	TArray<class AGridTile*> GridTiles;
 
@@ -57,4 +62,12 @@ public:
 
 	UFUNCTION()
 	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerSpawnCamera();
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastSpawnCamera();
+
+	UPROPERTY()
+	class ACrazyArcadePlayerController* PlayerController;
 };
