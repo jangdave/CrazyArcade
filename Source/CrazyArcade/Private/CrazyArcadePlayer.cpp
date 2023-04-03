@@ -63,6 +63,8 @@ void ACrazyArcadePlayer::BeginPlay()
 		GetMesh()->SetMaterial(1, mat2);
 	}
 
+	lobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWid);
+
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
 	{
 		GridTiles.Add(*itr);
@@ -74,6 +76,15 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(lobbyWidget != nullptr)
+	{
+		col = lobbyWidget->setColor;
+
+		UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), col.X, col.Y, col.Z)
+
+		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
+		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
+	}
 }
 
 // Called to bind functionality to input
@@ -155,4 +166,11 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	}
 
 	return NearestTile;
+}
+
+void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACrazyArcadePlayer, color);
 }
