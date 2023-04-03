@@ -2,7 +2,6 @@
 
 
 #include "CrazyArcadePlayer.h"
-
 #include "Bomb.h"
 #include "CrazyArcadePlayerController.h"
 #include "EnhancedInputComponent.h"
@@ -12,7 +11,9 @@
 #include "EngineUtils.h"
 #include "MainCamera.h"
 #include "StunBomb.h"
+#include "LobbyWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ACrazyArcadePlayer::ACrazyArcadePlayer()
@@ -63,6 +64,21 @@ void ACrazyArcadePlayer::BeginPlay()
 		ServerSpawnCamera();
 	}
 
+	// 캐릭터 색상 변경
+	UMaterialInterface* base_mat1 = GetMesh()->GetMaterial(0);
+	UMaterialInterface* base_mat2 = GetMesh()->GetMaterial(1);
+
+	if(base_mat1 != nullptr && base_mat2 != nullptr)
+	{
+		mat1 = UMaterialInstanceDynamic::Create(base_mat1, this);
+		GetMesh()->SetMaterial(0, mat1);
+
+		mat2 = UMaterialInstanceDynamic::Create(base_mat2, this);
+		GetMesh()->SetMaterial(1, mat2);
+	}
+
+	lobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWid);
+
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
 	{
 		GridTiles.Add(*itr);
@@ -74,6 +90,15 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(lobbyWidget != nullptr)
+	{
+		col = lobbyWidget->setColor;
+
+		UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), col.X, col.Y, col.Z)
+
+		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
+		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
+	}
 }
 
 // Called to bind functionality to input
@@ -169,4 +194,11 @@ void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
 {
 	MulticastSpawnCamera();
+}
+
+void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACrazyArcadePlayer, color);
 }

@@ -63,6 +63,7 @@ public:
 	UFUNCTION()
 	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
 
+
 	UFUNCTION(Server, Unreliable)
 	void ServerSpawnCamera();
 	UFUNCTION(NetMulticast, Unreliable)
@@ -70,4 +71,19 @@ public:
 
 	UPROPERTY()
 	class ACrazyArcadePlayerController* PlayerController;
+
+	// 색상 변환
+	class UMaterialInstanceDynamic* mat1;
+	class UMaterialInstanceDynamic* mat2;
+
+	class ULobbyWidget* lobbyWidget;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ULobbyWidget> lobbyWid;
+
+	UPROPERTY(Replicated)
+	FVector color;
+
+	FVector col;
+
 };

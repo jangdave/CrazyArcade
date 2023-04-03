@@ -16,6 +16,7 @@ class CRAZYARCADE_API ULobbyWidget : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
 	// 로비 페이지
@@ -89,4 +90,8 @@ public:
 	UFUNCTION()
 	void SetColorBlack();
 
+	UPROPERTY()
+	FVector setColor;
+
+	FORCEINLINE FVector SetColor() { return setColor; };
 };
