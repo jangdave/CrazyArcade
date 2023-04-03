@@ -2,7 +2,9 @@
 
 
 #include "LobbyWidget.h"
+#include "StartWidgetController.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -20,6 +22,10 @@ void ULobbyWidget::NativeConstruct()
 	btn_Orange->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorOrange);
 	btn_Indigo->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorIndigo);
 	btn_Black->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorBlack);
+
+	setColor = FVector(1, 1, 1);
+
+	controller = Cast<AStartWidgetController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 void ULobbyWidget::StartLevel()
@@ -34,40 +40,56 @@ void ULobbyWidget::BackLobby()
 
 void ULobbyWidget::SetColorBlue()
 {
+	setColor = FVector(0, 0, 1);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorGreen()
 {
+	setColor = FVector(0, 1, 0);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorYellow()
 {
+	setColor = FVector(1, 1, 0);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorRed()
 {
+	setColor = FVector(1, 0, 0);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorPink()
 {
+	setColor = FVector(1, 0, 1);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorOrange()
 {
+	setColor = FVector(1, 0.15f, 0);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorIndigo()
 {
+	setColor = FVector(0.02f, 0, 0.25);
 
+	controller->SetColor();
 }
 
 void ULobbyWidget::SetColorBlack()
 {
+	setColor = FVector(0, 0, 0);
 
+	controller->SetColor();
 }

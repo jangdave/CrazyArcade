@@ -57,4 +57,8 @@ public:
 
 	UFUNCTION()
 	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
+
+	// 색상 변환
+	class UMaterialInstanceDynamic* mat1;
+	class UMaterialInstanceDynamic* mat2;
 };

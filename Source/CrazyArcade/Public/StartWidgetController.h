@@ -17,7 +17,11 @@ class CRAZYARCADE_API AStartWidgetController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 public:
+	AStartWidgetController();
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ULobbyWidget> lobbyWidget;
 
@@ -35,4 +39,9 @@ public:
 
 	class UCrazyGameInstance* gameInstance;
 
+	UFUNCTION()
+	void SetColor();
+	
+	UPROPERTY(Replicated)
+	FVector color;
 };

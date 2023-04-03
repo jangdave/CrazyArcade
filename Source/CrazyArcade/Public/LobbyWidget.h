@@ -89,4 +89,10 @@ public:
 	UFUNCTION()
 	void SetColorBlack();
 
+	UPROPERTY()
+	FVector setColor;
+
+	FORCEINLINE FVector SetColor() { return setColor; };
+
+	class AStartWidgetController* controller;
 };

@@ -2,7 +2,6 @@
 
 
 #include "CrazyArcadePlayer.h"
-
 #include "Bomb.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,7 +9,9 @@
 #include "GridTile.h"
 #include "EngineUtils.h"
 #include "StunBomb.h"
+#include "LobbyWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ACrazyArcadePlayer::ACrazyArcadePlayer()
@@ -31,7 +32,7 @@ ACrazyArcadePlayer::ACrazyArcadePlayer()
 void ACrazyArcadePlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	auto PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if(PlayerController)
@@ -47,6 +48,19 @@ void ACrazyArcadePlayer::BeginPlay()
 				InputSubsystem->AddMappingContext(IMC_Player, 0);
 			}
 		}
+	}
+
+	// 캐릭터 색상 변경
+	UMaterialInterface* base_mat1 = GetMesh()->GetMaterial(0);
+	UMaterialInterface* base_mat2 = GetMesh()->GetMaterial(1);
+
+	if(base_mat1 != nullptr && base_mat2 != nullptr)
+	{
+		mat1 = UMaterialInstanceDynamic::Create(base_mat1, this);
+		GetMesh()->SetMaterial(0, mat1);
+
+		mat2 = UMaterialInstanceDynamic::Create(base_mat2, this);
+		GetMesh()->SetMaterial(1, mat2);
 	}
 
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
@@ -142,4 +156,3 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 
 	return NearestTile;
 }
-
