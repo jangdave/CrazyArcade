@@ -22,6 +22,10 @@ void AStartWidgetController::BeginPlay()
 
 	gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
 
+	owner = Cast<ACrazyArcadePlayer>(GetCharacter());
+
+	SetOwner(owner);
+
 	if(lobbyWidget != nullptr && IsLocalController())
 	{
 		lobbyWid = CreateWidget<ULobbyWidget>(this, lobbyWidget);
@@ -59,14 +63,49 @@ void AStartWidgetController::MulticastPlayWidget_Implementation()
 
 void AStartWidgetController::SetColor()
 {
-	color = lobbyWid->SetColor();
+	//if (lobbyWid != nullptr)
+	//{
+	//	color = lobbyWid->SetColor();
 
-	auto owner = Cast<ACrazyArcadePlayer>(GetPawn());
+	//	auto owner = Cast<ACrazyArcadePlayer>(GetOwner());
+		
+		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
 
-	//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
+	//	owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	//	owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	//}
+	//else
+	
+	SetServerColor();
+	
+	
+}
 
-	owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+void AStartWidgetController::SetServerColor_Implementation()
+{
+	if (lobbyWid != nullptr)
+	{
+		color = lobbyWid->SetColor();
+
+		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
+
+		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	}
+	//SetMulticastColor();
+}
+
+void AStartWidgetController::SetMulticastColor_Implementation()
+{
+	if(lobbyWid != nullptr)
+	{
+		color = lobbyWid->SetColor();
+
+		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
+		
+		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	}
 }
 
 void AStartWidgetController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

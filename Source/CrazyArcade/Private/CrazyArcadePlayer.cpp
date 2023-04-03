@@ -12,7 +12,6 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
-#include "StartWidgetController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -78,8 +77,6 @@ void ACrazyArcadePlayer::BeginPlay()
 		GetMesh()->SetMaterial(1, mat2);
 	}
 
-	lobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWid);
-
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
 	{
 		GridTiles.Add(*itr);
@@ -90,16 +87,7 @@ void ACrazyArcadePlayer::BeginPlay()
 void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if(lobbyWidget != nullptr)
-	{
-		col = lobbyWidget->setColor;
-
-		UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), col.X, col.Y, col.Z)
-
-		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
-		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
-	}
+	
 }
 
 // Called to bind functionality to input
@@ -200,11 +188,4 @@ void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
 {
 	MulticastSpawnCamera();
-}
-
-void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ACrazyArcadePlayer, color);
 }

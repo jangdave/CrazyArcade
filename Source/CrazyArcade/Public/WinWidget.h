@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "LobbyWidget.generated.h"
+#include "WinWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRAZYARCADE_API ULobbyWidget : public UUserWidget
+class CRAZYARCADE_API UWinWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -19,81 +19,54 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-	// 로비 페이지
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UHorizontalBox* horizonBox_PlayerList1;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UHorizontalBox* horizonBox_PlayerList2;
+	class UTextBlock* text_PlayerWinLose;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_BackLobby;
+	class UTextBlock* text_WinLose1;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_ReadyGame;
+	class UTextBlock* text_Name1;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_StartGame;
+	class UTextBlock* text_WinLose2;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Blue;
+	class UTextBlock* text_Name2;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Green;
+	class UTextBlock* text_WinLose3;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Yellow;
+	class UTextBlock* text_Name3;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Red;
+	class UTextBlock* text_WinLose4;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Pink;
+	class UTextBlock* text_Name4;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Orange;
+	class UTextBlock* text_WinLose5;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Indigo;
+	class UTextBlock* text_Name5;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UButton* btn_Black;
+	class UTextBlock* text_WinLose6;
 
-	UFUNCTION()
-	void StartLevel();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Name6;
 
-	UFUNCTION()
-	void BackLobby();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_WinLose7;
 
-	// 색상 선택 함수
-	UFUNCTION()
-	void SetColorBlue();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Name7;
 
-	UFUNCTION()
-	void SetColorGreen();
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_WinLose8;
 
-	UFUNCTION()
-	void SetColorYellow();
-
-	UFUNCTION()
-	void SetColorRed();
-
-	UFUNCTION()
-	void SetColorPink();
-
-	UFUNCTION()
-	void SetColorOrange();
-
-	UFUNCTION()
-	void SetColorIndigo();
-
-	UFUNCTION()
-	void SetColorBlack();
-
-	UPROPERTY()
-	FVector setColor;
-
-	FORCEINLINE FVector SetColor() { return setColor; };
-
-	class AStartWidgetController* controller;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Name8;
 };
