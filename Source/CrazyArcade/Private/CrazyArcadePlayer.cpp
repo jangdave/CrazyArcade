@@ -12,6 +12,7 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
+#include "StartWidgetController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -35,7 +36,7 @@ void ACrazyArcadePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+	auto PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if(PlayerController->IsLocalController())
 	{
@@ -184,10 +185,15 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 {
+	auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+
 	if (MainCamera)
 	{
-		PlayerController->SetViewTarget(MainCamera);
-		UE_LOG(LogTemp, Warning, TEXT("Multicast Camera"));
+		if(playerController)
+		{
+			playerController->SetViewTarget(MainCamera);
+			UE_LOG(LogTemp, Warning, TEXT("Multicast Camera"));
+		}
 	}
 }
 

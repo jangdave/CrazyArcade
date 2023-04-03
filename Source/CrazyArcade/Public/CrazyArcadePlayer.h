@@ -69,9 +69,6 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastSpawnCamera();
 
-	UPROPERTY()
-	class ACrazyArcadePlayerController* PlayerController;
-
 	// 색상 변환
 	class UMaterialInstanceDynamic* mat1;
 	class UMaterialInstanceDynamic* mat2;
