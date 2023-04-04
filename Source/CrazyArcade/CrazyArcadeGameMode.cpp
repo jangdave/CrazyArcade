@@ -2,6 +2,7 @@
 
 #include "CrazyArcadeGameMode.h"
 #include "CrazyArcadeCharacter.h"
+#include "EngineUtils.h"
 #include "MainCamera.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraActor.h"
@@ -9,6 +10,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
 #include "InGameWidget.h"
+#include "GameFramework/PlayerStart.h"
 
 ACrazyArcadeGameMode::ACrazyArcadeGameMode()
 {
@@ -20,21 +22,21 @@ ACrazyArcadeGameMode::ACrazyArcadeGameMode()
 	}
 }
 
-void ACrazyArcadeGameMode::BeginPlay()
+AActor* ACrazyArcadeGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	Super::BeginPlay();
+	Super::ChoosePlayerStart_Implementation(Player);
 
-	/*MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
-
-	auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if(PlayerController)
+	// 월드 안에 있는 APlayerStart 액터들을 가져온다.
+	for (TActorIterator<APlayerStart> itr(GetWorld()); itr; ++itr)
 	{
-		PlayerController->SetViewTarget(MainCamera);
+		APlayerStart* playerStart = *itr;
+		if (playerStart->PlayerStartTag != FName("Spawned"))
+		{
+			// 반환될 APlayerStart 액터의 태그"Spawned"를 추가한다.
+			playerStart->PlayerStartTag = FName("Spawned");
+			return playerStart;
+		}
 	}
 
-	InGameWidget = CreateWidget<UInGameWidget>(GetWorld(), InGameWidgetFactory);
-	InGameWidget->AddToViewport();
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);*/
-
+	return nullptr;
 }

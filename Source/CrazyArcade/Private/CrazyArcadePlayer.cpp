@@ -12,7 +12,6 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
-#include "StartWidgetController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -38,11 +37,6 @@ void ACrazyArcadePlayer::BeginPlay()
 
 	auto PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if(PlayerController->IsLocalController())
-	{
-		PlayerController->SetOwner(this);
-	}
-
 	if(PlayerController)
 	{
 		ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
@@ -62,7 +56,12 @@ void ACrazyArcadePlayer::BeginPlay()
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 	if(MainCamera)
 	{
-		ServerSpawnCamera();
+		if(PlayerController->IsLocalController())
+		{
+			PlayerController->SetViewTarget(MainCamera);
+			UE_LOG(LogTemp, Warning, TEXT("Camera SetView"));
+			//ServerSpawnCamera();
+		}
 	}
 
 	// 캐릭터 색상 변경
@@ -94,8 +93,6 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 	if(lobbyWidget != nullptr)
 	{
 		col = lobbyWidget->setColor;
-
-		UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), col.X, col.Y, col.Z)
 
 		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
 		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
@@ -192,14 +189,14 @@ void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 		if(playerController)
 		{
 			playerController->SetViewTarget(MainCamera);
-			UE_LOG(LogTemp, Warning, TEXT("Multicast Camera"));
+			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Multicast"));
 		}
 	}
 }
 
 void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
 {
-	MulticastSpawnCamera();
+	// MulticastSpawnCamera();
 }
 
 void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

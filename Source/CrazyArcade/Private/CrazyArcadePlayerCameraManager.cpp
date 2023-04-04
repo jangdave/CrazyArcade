@@ -15,5 +15,6 @@ void ACrazyArcadePlayerCameraManager::BeginPlay()
 	if (player)
 	{
 		SetViewTarget(player->MainCamera);
+		UE_LOG(LogTemp, Warning, TEXT("Camera Manager SetView"));
 	}
 }

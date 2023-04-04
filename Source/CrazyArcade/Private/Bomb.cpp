@@ -25,23 +25,21 @@ ABomb::ABomb()
 	MeshComponent->SetupAttachment(RootComponent);
 	MeshComponent->SetRelativeLocation(FVector(0.f, 0.f, -50.f));
 
-	BombParticlesVertical = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Vertical"));
-	BombParticlesVertical->SetupAttachment(RootComponent);
-
 	BombCollisionVertical = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Vertical"));
-	BombCollisionVertical->SetupAttachment(BombParticlesVertical);
+	BombCollisionVertical->SetupAttachment(RootComponent);
 	BombCollisionVertical->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	BombParticlesHorizontal = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Horizontal"));
-	BombParticlesHorizontal->SetupAttachment(RootComponent);
+	BombParticlesVertical = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Vertical"));
+	BombParticlesVertical->SetupAttachment(BombCollisionVertical);
 
 	BombCollisionHorizontal = CreateDefaultSubobject<UBoxComponent>(TEXT("Bomb Collision Horizontal"));
-	BombCollisionHorizontal->SetupAttachment(BombParticlesHorizontal);
+	BombCollisionHorizontal->SetupAttachment(RootComponent);
 	BombCollisionHorizontal->SetBoxExtent(FVector(40.f, 140.f, 45.f));
 	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-
+	BombParticlesHorizontal = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Bomb Particles Horizontal"));
+	BombParticlesHorizontal->SetupAttachment(BombCollisionHorizontal);
 }
 
 // Called when the game starts or when spawned
@@ -51,9 +49,6 @@ void ABomb::BeginPlay()
 
 	BombCollisionVertical->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBombPopBeginOverlap);
 	BombCollisionHorizontal->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnBombPopBeginOverlap);
-
-	BombParticlesVertical->Activate(true);
-	BombParticlesHorizontal->Activate(true);
 
 	FTimerHandle BombHandle;
 	GetWorldTimerManager().SetTimer(BombHandle, FTimerDelegate::CreateLambda([this]()->void
@@ -73,8 +68,10 @@ void ABomb::Tick(float DeltaTime)
 
 void ABomb::Pop()
 {
-	BombParticlesVertical->Activate(true);
-	BombParticlesHorizontal->Activate(true);
+	BombParticlesVertical->ActivateSystem(true);
+	BombParticlesHorizontal->ActivateSystem(true);
+
+
 	BombCollisionVertical->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	BombCollisionHorizontal->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
@@ -103,6 +100,4 @@ void ABomb::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		
 	}
-
-	
 }
