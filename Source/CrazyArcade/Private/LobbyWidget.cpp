@@ -4,6 +4,9 @@
 #include "LobbyWidget.h"
 #include "StartWidgetController.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
 void ULobbyWidget::NativeConstruct()
@@ -26,12 +29,15 @@ void ULobbyWidget::NativeConstruct()
 	setColor = FVector(1, 1, 1);
 
 	controller = Cast<AStartWidgetController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	texts = { text_Player0, text_Player1, text_Player2, text_Player3, text_Player4, text_Player5, text_Player6, text_Player7 };
 }
 
 void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+	SetName();
 }
 
 void ULobbyWidget::StartLevel()
@@ -98,4 +104,17 @@ void ULobbyWidget::SetColorBlack()
 	setColor = FVector(0, 0, 0);
 
 	controller->SetColor();
+}
+
+void ULobbyWidget::SetName()
+{
+	auto array = GetWorld()->GetGameState()->PlayerArray;
+
+	if(array.Num() >= 0)
+	{
+		for (int i = 0; i < array.Num(); i++)
+		{
+			texts[i]->SetText(FText::FromString(array[i]->GetPlayerName()));
+		}
+	}
 }

@@ -20,12 +20,57 @@ protected:
 
 public:
 	// 로비 페이지
+	// 강퇴 버튼
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UHorizontalBox* horizonBox_PlayerList1;
+	class UButton* btn_Player0;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UHorizontalBox* horizonBox_PlayerList2;
+	class UButton* btn_Player1;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player2;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player3;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player4;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player5;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player6;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* btn_Player7;
+
+	// 네임 박스
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player0;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player1;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player2;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player3;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player4;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player5;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player6;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* text_Player7;
+
+	// 위젯 버튼
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_BackLobby;
 
@@ -35,6 +80,7 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_StartGame;
 
+	// 색깔 버튼
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Blue;
 
@@ -96,4 +142,8 @@ public:
 	FORCEINLINE FVector SetColor() { return setColor; };
 
 	class AStartWidgetController* controller;
+	
+	TArray<UTextBlock*> texts;
+
+	void SetName();
 };

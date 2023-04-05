@@ -4,6 +4,7 @@
 #include "CrazyArcadePlayer.h"
 #include "Bomb.h"
 #include "CrazyArcadePlayerController.h"
+#include "CrazyGameInstance.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
@@ -13,6 +14,7 @@
 #include "StunBomb.h"
 #include "LobbyWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -37,10 +39,10 @@ void ACrazyArcadePlayer::BeginPlay()
 
 	auto PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if(PlayerController->IsLocalController())
-	{
-		PlayerController->SetOwner(this);
-	}
+	//if(PlayerController->IsLocalController())
+	//{
+	//	PlayerController->SetOwner(this);
+	//}
 
 	if(PlayerController)
 	{
@@ -75,6 +77,12 @@ void ACrazyArcadePlayer::BeginPlay()
 
 		mat2 = UMaterialInstanceDynamic::Create(base_mat2, this);
 		GetMesh()->SetMaterial(1, mat2);
+	}
+
+	// 플레이어 스테이트에 이름 저장
+	if(GetController() != nullptr && GetController()->IsLocalController())
+	{
+		ServerSetName();
 	}
 
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
@@ -169,6 +177,18 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	}
 
 	return NearestTile;
+}
+
+void ACrazyArcadePlayer::ServerSetName_Implementation()
+{
+	APlayerState* ps = Cast<APlayerState>(GetPlayerState());
+
+	if (ps != nullptr)
+	{
+		auto gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
+		// 해당 플레이어에 대한 이름 변경
+		ps->SetPlayerName(gameInstance->sessionID.ToString());
+	}
 }
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()

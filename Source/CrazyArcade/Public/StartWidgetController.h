@@ -30,15 +30,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ULobbyPlayerWidget> playerWidget;
-
-	UFUNCTION(Server, Unreliable)
-	void ServerPlayWidget();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastPlayWidget();
-
+	
 	class UCrazyGameInstance* gameInstance;
-
+	
 	UFUNCTION()
 	void SetColor();
 
