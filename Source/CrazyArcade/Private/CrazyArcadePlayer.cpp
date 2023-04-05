@@ -5,6 +5,7 @@
 #include "Bomb.h"
 #include "CrazyArcadePlayerController.h"
 #include "CrazyGameInstance.h"
+#include "CrazyLobbyPlayerState.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
@@ -79,10 +80,14 @@ void ACrazyArcadePlayer::BeginPlay()
 		GetMesh()->SetMaterial(1, mat2);
 	}
 
+	lobby_Wid = CreateWidget<ULobbyWidget>(GetWorld(), lobby_UI);
+	gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
+	pstate = Cast<ACrazyLobbyPlayerState>(GetPlayerState());
+
 	// 플레이어 스테이트에 이름 저장
 	if(GetController() != nullptr && GetController()->IsLocalController())
 	{
-		ServerSetName();
+		ServerSetName(gameInstance->sessionID.ToString());
 	}
 
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
@@ -96,7 +101,15 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetController() != nullptr && GetController()->IsLocalController())
+	{
+		ServerSetColor(gameInstance->setMatColor);
 
+		if(pstate != nullptr)
+		{
+			ServerColor();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -180,16 +193,35 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	return NearestTile;
 }
 
-void ACrazyArcadePlayer::ServerSetName_Implementation()
+void ACrazyArcadePlayer::ServerColor_Implementation()
 {
-	APlayerState* ps = Cast<APlayerState>(GetPlayerState());
+	pstate->SetButtonColor = (FLinearColor)gameInstance->setMatColor;
 
-	if (ps != nullptr)
+	UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), pstate->SetButtonColor.R, pstate->SetButtonColor.G, pstate->SetButtonColor.B)
+}
+
+void ACrazyArcadePlayer::ServerSetName_Implementation(const FString& name)
+{
+	APlayerState* pp = Cast<APlayerState>(GetPlayerState());
+
+	if (pp != nullptr)
 	{
-		auto gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
 		// 해당 플레이어에 대한 이름 변경
-		ps->SetPlayerName(gameInstance->sessionID.ToString());
+		pp->SetPlayerName(name);
+
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *name);
 	}
+}
+
+void ACrazyArcadePlayer::ServerSetColor_Implementation(const FVector& color)
+{
+	MulticastSetColor(color);
+}
+
+void ACrazyArcadePlayer::MulticastSetColor_Implementation(const FVector& color)
+{
+	mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
 }
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
@@ -215,5 +247,6 @@ void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ACrazyArcadePlayer, color);
+	DOREPLIFETIME(ACrazyArcadePlayer, mat1);
+	DOREPLIFETIME(ACrazyArcadePlayer, mat2);
 }

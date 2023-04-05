@@ -9,6 +9,7 @@
 UCrazyGameInstance::UCrazyGameInstance()
 {
 	sessionID = "Test Session";
+	setMatColor = FVector(1, 1, 1);
 }
 
 void UCrazyGameInstance::Init()
@@ -150,4 +151,5 @@ void UCrazyGameInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UCrazyGameInstance, sessionID);
+	DOREPLIFETIME(UCrazyGameInstance, setMatColor);
 }
