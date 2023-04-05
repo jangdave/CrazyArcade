@@ -90,7 +90,20 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(MainCamera != nullptr)
+	{
+		// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+		auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 
+		if (MainCamera)
+		{
+			if (playerController != nullptr)
+			{
+				playerController->SetViewTarget(MainCamera);
+				UE_LOG(LogTemp, Warning, TEXT("Camera SetView Tick"));
+			}
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -191,7 +204,9 @@ void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
-	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
+	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+
 
 	if (MainCamera)
 	{
@@ -208,7 +223,9 @@ void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
 	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
-	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
+	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+
 	
 	if (MainCamera)
 	{
@@ -228,7 +245,9 @@ void ACrazyArcadePlayer::ClientSpawnCamera_Implementation()
 	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
 	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
-	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
+	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+
 
 	if (MainCamera)
 	{
