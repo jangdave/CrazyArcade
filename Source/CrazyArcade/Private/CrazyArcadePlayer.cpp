@@ -4,6 +4,7 @@
 #include "CrazyArcadePlayer.h"
 #include "Bomb.h"
 #include "CrazyArcadePlayerController.h"
+#include "CrazyGameInstance.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
@@ -13,6 +14,7 @@
 #include "StunBomb.h"
 #include "LobbyWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -77,7 +79,11 @@ void ACrazyArcadePlayer::BeginPlay()
 		GetMesh()->SetMaterial(1, mat2);
 	}
 
-	lobbyWidget = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWid);
+	// 플레이어 스테이트에 이름 저장
+	if(GetController() != nullptr && GetController()->IsLocalController())
+	{
+		ServerSetName();
+	}
 
 	for(TActorIterator<AGridTile> itr(GetWorld()); itr; ++itr)
 	{
@@ -90,13 +96,7 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(lobbyWidget != nullptr)
-	{
-		col = lobbyWidget->setColor;
 
-		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
-		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)col);
-	}
 }
 
 // Called to bind functionality to input
@@ -178,6 +178,18 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	}
 
 	return NearestTile;
+}
+
+void ACrazyArcadePlayer::ServerSetName_Implementation()
+{
+	APlayerState* ps = Cast<APlayerState>(GetPlayerState());
+
+	if (ps != nullptr)
+	{
+		auto gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
+		// 해당 플레이어에 대한 이름 변경
+		ps->SetPlayerName(gameInstance->sessionID.ToString());
+	}
 }
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()

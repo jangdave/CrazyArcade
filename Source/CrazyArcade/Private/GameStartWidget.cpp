@@ -10,6 +10,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "RoomSlotWidget.h"
 #include "Components/ScrollBox.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGameStartWidget::NativeConstruct()
 {

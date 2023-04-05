@@ -30,18 +30,20 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ULobbyPlayerWidget> playerWidget;
-
-	UFUNCTION(Server, Unreliable)
-	void ServerPlayWidget();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastPlayWidget();
-
+	
 	class UCrazyGameInstance* gameInstance;
-
+	
 	UFUNCTION()
 	void SetColor();
-	
-	UPROPERTY(Replicated)
+
+	UFUNCTION(Server, Unreliable)
+	void SetServerColor();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void SetMulticastColor();
+
+	UPROPERTY(ReplicatedUsing = SetMulticastColor)
 	FVector color;
+
+	class ACrazyArcadePlayer* owner;
 };

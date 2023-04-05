@@ -5,9 +5,10 @@
 #include "CrazyArcadePlayer.h"
 #include "CrazyGameInstance.h"
 #include "LobbyWidget.h"
-#include "LobbyPlayerWidget.h"
 #include "Components/HorizontalBox.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -24,13 +25,11 @@ void AStartWidgetController::BeginPlay()
 
 	if(lobbyWidget != nullptr && IsLocalController())
 	{
-		lobbyWid = CreateWidget<ULobbyWidget>(this, lobbyWidget);
+		lobbyWid = CreateWidget<ULobbyWidget>(GetWorld(), lobbyWidget);
 
 		lobbyWid->AddToViewport();
 
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
-		
-		ServerPlayWidget();
 	}
 }
 
@@ -40,33 +39,36 @@ void AStartWidgetController::Tick(float DeltaSeconds)
 
 }
 
-void AStartWidgetController::ServerPlayWidget_Implementation()
-{
-	MulticastPlayWidget();
-}
-
-void AStartWidgetController::MulticastPlayWidget_Implementation()
-{
-	auto playerWid = CreateWidget<ULobbyPlayerWidget>(this, playerWidget);
-
-	if (playerWid != nullptr)
-	{
-		playerWid->text_PlayerName->SetText(FText::FromName(gameInstance->GetName()));
-
-		lobbyWid->horizonBox_PlayerList1->AddChild(playerWid);
-	}
-}
-
 void AStartWidgetController::SetColor()
 {
-	color = lobbyWid->SetColor();
+	SetServerColor();	
+}
 
-	auto owner = Cast<ACrazyArcadePlayer>(GetPawn());
+void AStartWidgetController::SetServerColor_Implementation()
+{
+	if (lobbyWid != nullptr)
+	{
+		color = lobbyWid->SetColor();
 
-	//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
+		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
 
-	owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	}
+	//SetMulticastColor();
+}
+
+void AStartWidgetController::SetMulticastColor_Implementation()
+{
+	if(lobbyWid != nullptr)
+	{
+		color = lobbyWid->SetColor();
+
+		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
+		
+		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	}
 }
 
 void AStartWidgetController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
