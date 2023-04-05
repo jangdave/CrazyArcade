@@ -54,17 +54,11 @@ void ACrazyArcadePlayer::BeginPlay()
 		}
 	}
 
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
-	if(MainCamera)
+	if(HasAuthority())
 	{
-		if(PlayerController->IsLocalController())
-		{
-			PlayerController->SetViewTarget(MainCamera);
-			UE_LOG(LogTemp, Warning, TEXT("Camera SetView"));
-			//ServerSpawnCamera();
-		}
+		ServerSpawnCamera();
 	}
+
 
 	// 캐릭터 색상 변경
 	UMaterialInterface* base_mat1 = GetMesh()->GetMaterial(0);
@@ -194,11 +188,14 @@ void ACrazyArcadePlayer::ServerSetName_Implementation()
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 {
-	auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
+
+	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
 
 	if (MainCamera)
 	{
-		if(playerController)
+		if(playerController != nullptr)
 		{
 			playerController->SetViewTarget(MainCamera);
 			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Multicast"));
@@ -208,12 +205,44 @@ void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
 
 void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
 {
-	// MulticastSpawnCamera();
+	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
+
+	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
+	
+	if (MainCamera)
+	{
+		if (playerController != nullptr)
+		{
+			playerController->SetViewTarget(MainCamera);
+			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Server"));
+		}
+	}
+
+	MulticastSpawnCamera();
 }
 
-void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+
+void ACrazyArcadePlayer::ClientSpawnCamera_Implementation()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
+	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
 
-	DOREPLIFETIME(ACrazyArcadePlayer, color);
+	auto playerController = Cast<ACrazyArcadePlayerController>(GetController());
+
+	if (MainCamera)
+	{
+		if (playerController != nullptr)
+		{
+			playerController->SetViewTarget(MainCamera);
+			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Server"));
+		}
+	}
 }
+
+//void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//
+//
+//}

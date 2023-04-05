@@ -68,6 +68,8 @@ public:
 	void ServerSpawnCamera();
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastSpawnCamera();
+	UFUNCTION(Client, Unreliable)
+	void ClientSpawnCamera();
 
 	UFUNCTION(Server, Unreliable)
 	void ServerSetName();
