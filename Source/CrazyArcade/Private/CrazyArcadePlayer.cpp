@@ -14,6 +14,9 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
+#include "StartWidgetController.h"
+#include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
@@ -60,7 +63,6 @@ void ACrazyArcadePlayer::BeginPlay()
 		ServerSpawnCamera();
 	}
 
-
 	// 캐릭터 색상 변경
 	UMaterialInterface* base_mat1 = GetMesh()->GetMaterial(0);
 	UMaterialInterface* base_mat2 = GetMesh()->GetMaterial(1);
@@ -73,10 +75,9 @@ void ACrazyArcadePlayer::BeginPlay()
 		mat2 = UMaterialInstanceDynamic::Create(base_mat2, this);
 		GetMesh()->SetMaterial(1, mat2);
 	}
-
-	lobby_Wid = CreateWidget<ULobbyWidget>(GetWorld(), lobby_UI);
+	
 	gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
-	pstate = Cast<ACrazyLobbyPlayerState>(GetPlayerState());
+	startCont = Cast<AStartWidgetController>(GetWorld()->GetFirstPlayerController());
 
 	// 플레이어 스테이트에 이름 저장
 	if(GetController() != nullptr && GetController()->IsLocalController())
@@ -105,16 +106,17 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 			if (playerController != nullptr)
 			{
 				playerController->SetViewTarget(MainCamera);
-				UE_LOG(LogTemp, Warning, TEXT("Camera SetView Tick"));
+				//UE_LOG(LogTemp, Warning, TEXT("Camera SetView Tick"));
 			}
 		}
 	}
 
+	// 캐릭터 색상 & 위젯 버튼 색상
 	if (GetController() != nullptr && GetController()->IsLocalController())
 	{
 		ServerSetColor(gameInstance->setMatColor);
 
-		if(pstate != nullptr)
+		if(startCont != nullptr)
 		{
 			ServerColor(gameInstance->setMatColor);
 		}
@@ -227,21 +229,36 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 
 void ACrazyArcadePlayer::ServerColor_Implementation(const FVector& color)
 {
+	MulticastColor(color);
 }
 
 void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color)
 {
+	if (startCont->lobbyWid != nullptr)
+	{
+		for (int i = 0; i < startCont->lobbyWid->texts.Num(); i++)
+		{
+			if (startCont->lobbyWid->texts[i]->GetText().ToString() == pName)
+			{
+				auto button = Cast<UButton>(startCont->lobbyWid->texts[i]->GetParent());
+
+				if(bCheckReady != true)
+				{
+					button->SetBackgroundColor((FLinearColor)color);
+				}
+				else
+				{
+					
+				}
+			}
+		}
+	}
 }
-
-//void ACrazyArcadePlayer::ServerColor_Implementation()
-//{
-//	pstate->SetButtonColor = (FLinearColor)gameInstance->setMatColor;
-
-//	UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), pstate->SetButtonColor.R, pstate->SetButtonColor.G, pstate->SetButtonColor.B)
-//}
 
 void ACrazyArcadePlayer::ServerSetName_Implementation(const FString& name)
 {
+	pName = name;
+
 	APlayerState* pp = Cast<APlayerState>(GetPlayerState());
 
 	if (pp != nullptr)
@@ -260,8 +277,11 @@ void ACrazyArcadePlayer::ServerSetColor_Implementation(const FVector& color)
 
 void ACrazyArcadePlayer::MulticastSetColor_Implementation(const FVector& color)
 {
-	mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	if(mat1 != nullptr && mat2 != nullptr)
+	{
+		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+	}
 }
 
 void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
@@ -329,4 +349,7 @@ void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME(ACrazyArcadePlayer, mat1);
 	DOREPLIFETIME(ACrazyArcadePlayer, mat2);
+	DOREPLIFETIME(ACrazyArcadePlayer, pName);
+	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReady);
+	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReadyList);
 }

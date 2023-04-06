@@ -80,6 +80,9 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void ServerSetName(const FString& name);
 
+	UPROPERTY(Replicated)
+	FString pName;
+
 	// 색상 변환
 	UPROPERTY(Replicated)
 	class UMaterialInstanceDynamic* mat1;
@@ -94,19 +97,18 @@ public:
 	void MulticastSetColor(const FVector& color);
 
 	class UCrazyGameInstance* gameInstance;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ULobbyWidget> lobby_UI;
-
-	UPROPERTY()
-	class ULobbyWidget* lobby_Wid;
-
-	UPROPERTY()
-	class ACrazyLobbyPlayerState* pstate;
+	
+	class AStartWidgetController* startCont;
 
 	UFUNCTION(Server, Unreliable)
 	void ServerColor(const FVector& color);
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastColor(const FVector& color);
+
+	UPROPERTY(Replicated)
+	bool bCheckReady;
+
+	UPROPERTY(Replicated)
+	TArray<bool> bCheckReadyList;
 };
