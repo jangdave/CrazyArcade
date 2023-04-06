@@ -3,7 +3,6 @@
 
 #include "LobbyWidget.h"
 #include "CrazyArcadePlayer.h"
-#include "CrazyLobbyPlayerState.h"
 #include "StartWidgetController.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -15,8 +14,22 @@ void ULobbyWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	controller = Cast<AStartWidgetController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	player = Cast<ACrazyArcadePlayer>(GetOwningPlayerPawn());
+
+	if(player->HasAuthority())
+	{
+		btn_StartGame->OnClicked.AddDynamic(this, &ULobbyWidget::StartLevel);
+	}
+	else
+	{
+		btn_StartGame->SetIsEnabled(false);
+	}
+
+	btn_ReadyGame->OnClicked.AddDynamic(this, &ULobbyWidget::ReadyGame);
+
 	btn_BackLobby->OnClicked.AddDynamic(this, &ULobbyWidget::BackLobby);
-	btn_StartGame->OnClicked.AddDynamic(this, &ULobbyWidget::StartLevel);
 
 	// 색상 선택
 	btn_Blue->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorBlue);
@@ -27,10 +40,14 @@ void ULobbyWidget::NativeConstruct()
 	btn_Orange->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorOrange);
 	btn_Indigo->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorIndigo);
 	btn_Black->OnClicked.AddDynamic(this, &ULobbyWidget::SetColorBlack);
-
-	controller = Cast<AStartWidgetController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	player = Cast<ACrazyArcadePlayer>(GetOwningPlayerPawn());
+	btn_Player0->AddChild(text_Player0);
+	btn_Player1->AddChild(text_Player1);
+	btn_Player2->AddChild(text_Player2);
+	btn_Player3->AddChild(text_Player3);
+	btn_Player4->AddChild(text_Player4);
+	btn_Player5->AddChild(text_Player5);
+	btn_Player6->AddChild(text_Player6);
+	btn_Player7->AddChild(text_Player7);
 
 	texts = { text_Player0, text_Player1, text_Player2, text_Player3, text_Player4, text_Player5, text_Player6, text_Player7 };
 
@@ -42,6 +59,7 @@ void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	SetName();
+
 }
 
 void ULobbyWidget::StartLevel()
@@ -52,6 +70,11 @@ void ULobbyWidget::StartLevel()
 void ULobbyWidget::BackLobby()
 {
 
+}
+
+void ULobbyWidget::ReadyGame()
+{
+	player->bCheckReady = true;
 }
 
 void ULobbyWidget::SetColorBlue()
@@ -117,15 +140,5 @@ void ULobbyWidget::SetName()
 	for (int i = 0; i < array.Num(); i++)
 	{
 		texts[i]->SetText(FText::FromString(array[i]->GetPlayerName()));
-
-		//auto state = Cast<ACrazyLobbyPlayerState>(array[i]);
-
-		//buttons[i]->SetBackgroundColor(state->SetButtonColor);
 	}
 }
-
-// 배열을 접속 시간 순서대로 배열해서 해보기
-
-// 서버 함수로 실행
-
-//auto playerState = Cast<ACrazyLobbyPlayerState>(player->GetPlayerState());

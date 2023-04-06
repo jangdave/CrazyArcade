@@ -19,7 +19,6 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-	// 로비 페이지
 	// 강퇴 버튼
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Player0;
@@ -80,6 +79,15 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_StartGame;
 
+	UFUNCTION()
+	void StartLevel();
+
+	UFUNCTION()
+	void BackLobby();
+
+	UFUNCTION()
+	void ReadyGame();
+	
 	// 색깔 버튼
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Blue;
@@ -104,12 +112,6 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Black;
-
-	UFUNCTION()
-	void StartLevel();
-
-	UFUNCTION()
-	void BackLobby();
 
 	// 색상 선택 함수
 	UFUNCTION()
@@ -136,6 +138,9 @@ public:
 	UFUNCTION()
 	void SetColorBlack();
 
+	UFUNCTION()
+	void SetName();
+
 	UPROPERTY()
 	FVector setColor;
 
@@ -148,7 +153,4 @@ public:
 	TArray<UTextBlock*> texts;
 
 	TArray<UButton*> buttons;
-
-	UFUNCTION()
-	void SetName();
 };
