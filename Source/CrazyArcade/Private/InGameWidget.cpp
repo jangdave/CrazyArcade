@@ -11,7 +11,7 @@ void UInGameWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	playerNames = { Text_Player0 , Text_Player1, Text_Player2, Text_Player3, Text_Player4, Text_Player5, Text_Player6, Text_Player7 };
+	playerNames = { Text_Player0, Text_Player1, Text_Player2, Text_Player3, Text_Player4, Text_Player5, Text_Player6, Text_Player7 };
 }
 
 void UInGameWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)

@@ -69,4 +69,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* text_Name8;
+
+	TArray<UTextBlock*> Names;
+	TArray<UTextBlock*> Results;
+
+
 };

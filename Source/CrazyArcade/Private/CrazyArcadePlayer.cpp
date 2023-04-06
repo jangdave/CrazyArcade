@@ -16,9 +16,11 @@
 #include "LobbyWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "StartWidgetController.h"
+#include "WinWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
@@ -85,6 +87,12 @@ void ACrazyArcadePlayer::BeginPlay()
 	{
 		GridTiles.Add(*itr);
 	}
+
+	if(HasAuthority())
+	{
+		PlayersNum = GetWorld()->GetGameState()->PlayerArray.Num();
+		UE_LOG(LogTemp, Warning, TEXT("BeginPlay PlayersNum: %d"), PlayersNum);
+	}
 }
 
 // Called every frame
@@ -113,6 +121,27 @@ void ACrazyArcadePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	InputComp->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ACrazyArcadePlayer::Move);
 	InputComp->BindAction(IA_Bomb, ETriggerEvent::Started, this, &ACrazyArcadePlayer::SpawnBomb);
+}
+
+void ACrazyArcadePlayer::ServerWinWidget_Implementation()
+{
+	CreateWinWidget();
+	MulticastWinWidget();
+}
+
+void ACrazyArcadePlayer::MulticastWinWidget_Implementation()
+{
+	CreateWinWidget();
+}
+
+void ACrazyArcadePlayer::CreateWinWidget()
+{
+	FTimerHandle winTimer;
+	GetWorldTimerManager().SetTimer(winTimer, FTimerDelegate::CreateLambda([this]()->void
+		{
+			WinWidget->AddToViewport(100);
+			UE_LOG(LogTemp, Warning, TEXT("PlayersNum AddToViewport: %d"), PlayersNum);
+		}), 3.f, false);
 }
 
 void ACrazyArcadePlayer::Move(const FInputActionValue& Value)
@@ -196,6 +225,22 @@ void ACrazyArcadePlayer::SpawnStunBomb()
 		GetMesh()->SetVisibility(false);
 		bIsDead = true;
 	}), 3.f, false, 3.f);
+
+	if(HasAuthority())
+	{
+		PlayersNum--;
+		UE_LOG(LogTemp, Warning, TEXT("%d: PlayersNum"), PlayersNum);
+	}
+
+	WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetFactory);
+	if (WinWidget != nullptr)
+	{
+		if (PlayersNum <= 0)
+		{
+			ServerWinWidget();
+			// PlayersNum = 1;
+		}
+	}
 }
 
 AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGridTile*>& TilesToCheck, float& Distance)
@@ -290,4 +335,5 @@ void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ACrazyArcadePlayer, pName);
 	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReady);
 	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReadyList);
+	DOREPLIFETIME(ACrazyArcadePlayer, PlayersNum);
 }

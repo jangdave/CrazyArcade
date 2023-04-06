@@ -46,6 +46,21 @@ public:
 	UPROPERTY()
 	TArray<class AGridTile*> GridTiles;
 
+	UPROPERTY(EditAnywhere, Category="Widget")
+	TSubclassOf<class UWinWidget> WinWidgetFactory;
+	UPROPERTY()
+	class UWinWidget* WinWidget;
+
+	UPROPERTY(Replicated)
+	int32 PlayersNum;
+
+	UFUNCTION()
+	void CreateWinWidget();
+	UFUNCTION(Server, Unreliable)
+	void ServerWinWidget();
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastWinWidget();
+
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
@@ -70,8 +85,6 @@ public:
 
 	UPROPERTY()
 	bool bIsDead = false;
-	UPROPERTY()
-	FString Text_IfWin = "";
 
 
 	// 이름 저장

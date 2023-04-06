@@ -16,7 +16,7 @@ class CRAZYARCADE_API UInGameWidget : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	// virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(BindWidget))
