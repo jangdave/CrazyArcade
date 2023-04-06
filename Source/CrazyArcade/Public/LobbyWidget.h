@@ -142,8 +142,13 @@ public:
 	FORCEINLINE FVector SetColor() { return setColor; };
 
 	class AStartWidgetController* controller;
-	
+
+	class ACrazyArcadePlayer* player;
+
 	TArray<UTextBlock*> texts;
 
+	TArray<UButton*> buttons;
+
+	UFUNCTION()
 	void SetName();
 };

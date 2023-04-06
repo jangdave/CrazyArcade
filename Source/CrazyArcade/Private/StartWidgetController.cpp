@@ -6,9 +6,7 @@
 #include "CrazyGameInstance.h"
 #include "LobbyWidget.h"
 #include "Components/HorizontalBox.h"
-#include "Components/TextBlock.h"
 #include "GameFramework/GameStateBase.h"
-#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -41,39 +39,7 @@ void AStartWidgetController::Tick(float DeltaSeconds)
 
 void AStartWidgetController::SetColor()
 {
-	SetServerColor();	
-}
+	color = lobbyWid->SetColor();
 
-void AStartWidgetController::SetServerColor_Implementation()
-{
-	if (lobbyWid != nullptr)
-	{
-		color = lobbyWid->SetColor();
-
-		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
-
-		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	}
-	//SetMulticastColor();
-}
-
-void AStartWidgetController::SetMulticastColor_Implementation()
-{
-	if(lobbyWid != nullptr)
-	{
-		color = lobbyWid->SetColor();
-
-		//UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), color.X, color.Y, color.Z)
-		
-		owner->mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-		owner->mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	}
-}
-
-void AStartWidgetController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AStartWidgetController, color);
+	gameInstance->setMatColor = color;
 }

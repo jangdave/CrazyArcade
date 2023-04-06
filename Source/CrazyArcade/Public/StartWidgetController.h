@@ -35,15 +35,7 @@ public:
 	
 	UFUNCTION()
 	void SetColor();
-
-	UFUNCTION(Server, Unreliable)
-	void SetServerColor();
-
-	UFUNCTION(NetMulticast, Unreliable)
-	void SetMulticastColor();
-
-	UPROPERTY(ReplicatedUsing = SetMulticastColor)
+	
+	UPROPERTY()
 	FVector color;
-
-	class ACrazyArcadePlayer* owner;
 };

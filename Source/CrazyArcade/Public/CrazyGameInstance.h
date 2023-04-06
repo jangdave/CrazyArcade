@@ -37,7 +37,7 @@ public:
 	UCrazyGameInstance();
 
 	virtual void Init() override;
-
+	
 	IOnlineSessionPtr sesInterface;
 
 	UPROPERTY(Replicated)
@@ -67,4 +67,7 @@ public:
 	void JoinSessionComplete(FName sessionName, EOnJoinSessionCompleteResult::Type joinResult);
 
 	FORCEINLINE FName GetName() { return sessionID; };
+
+	UPROPERTY(Replicated)
+	FVector setMatColor;
 };

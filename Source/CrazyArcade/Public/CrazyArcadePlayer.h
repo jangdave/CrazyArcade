@@ -69,7 +69,6 @@ public:
 	UFUNCTION()
 	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
 
-
 	UFUNCTION(Server, Unreliable)
 	void ServerSpawnCamera();
 	UFUNCTION(NetMulticast, Unreliable)
@@ -77,10 +76,37 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void ClientSpawnCamera();
 
+	// 이름 저장
 	UFUNCTION(Server, Unreliable)
-	void ServerSetName();
-	
+	void ServerSetName(const FString& name);
+
 	// 색상 변환
+	UPROPERTY(Replicated)
 	class UMaterialInstanceDynamic* mat1;
+
+	UPROPERTY(Replicated)
 	class UMaterialInstanceDynamic* mat2;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerSetColor(const FVector& color);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastSetColor(const FVector& color);
+
+	class UCrazyGameInstance* gameInstance;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ULobbyWidget> lobby_UI;
+
+	UPROPERTY()
+	class ULobbyWidget* lobby_Wid;
+
+	UPROPERTY()
+	class ACrazyLobbyPlayerState* pstate;
+
+	UFUNCTION(Server, Unreliable)
+	void ServerColor(const FVector& color);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastColor(const FVector& color);
 };
