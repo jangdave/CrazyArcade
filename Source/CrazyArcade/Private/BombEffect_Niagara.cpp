@@ -31,7 +31,7 @@ void UBombEffect_Niagara::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedC
 
 	if(player != nullptr)
 	{
-		player->Stun();
+		// player->Stun();
 	}
 
 	if(destroyBox != nullptr)

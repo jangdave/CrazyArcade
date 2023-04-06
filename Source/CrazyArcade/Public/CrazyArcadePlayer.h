@@ -43,11 +43,6 @@ public:
 	TSubclassOf<class AStunBomb> StunBombFactory;
 	class AStunBomb* StunBomb;
 
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	TSubclassOf<class ACameraActor> CameraFactory;
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	class AMainCamera* MainCamera;
-
 	UPROPERTY()
 	TArray<class AGridTile*> GridTiles;
 
@@ -61,20 +56,23 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void ServerSpawnBomb();
 
-	UFUNCTION()
-	void Stun();
+	UFUNCTION(Client, Unreliable)
+	void ClientStun();
+	UFUNCTION(Server, Unreliable)
+	void ServerStun();
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastStun();
 	UFUNCTION()
 	void SpawnStunBomb();
 
 	UFUNCTION()
 	class AGridTile* FindNearstTile(FVector Origin, const TArray<class AGridTile*>& TilesToCheck, float& Distance);
 
-	UFUNCTION(Server, Unreliable)
-	void ServerSpawnCamera();
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastSpawnCamera();
-	UFUNCTION(Client, Unreliable)
-	void ClientSpawnCamera();
+	UPROPERTY()
+	bool bIsDead = false;
+	UPROPERTY()
+	FString Text_IfWin = "";
+
 
 	// 이름 저장
 	UFUNCTION(Server, Unreliable)

@@ -13,5 +13,16 @@ UCLASS()
 class CRAZYARCADE_API AMainCamera : public ACameraActor
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	UFUNCTION(Server, Unreliable)
+	void ServerSetMainCamera();
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastSetMainCamera();
+
+	UFUNCTION()
+	void SetMainCamera();
 };

@@ -13,5 +13,31 @@ UCLASS()
 class CRAZYARCADE_API UInGameWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(BindWidget))
+	class UTextBlock* Text_Player0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player4;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player5;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player6;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UTextBlock* Text_Player7;
+
+	TArray<UTextBlock*> playerNames;
+
+	UFUNCTION()
+	void SetName();
 };

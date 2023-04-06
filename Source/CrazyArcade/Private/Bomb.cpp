@@ -88,7 +88,9 @@ void ABomb::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		float dist = 0.f;
 		FVector stunLocation = player->FindNearstTile(player->GetActorLocation(), player->GridTiles, dist)->GetActorLocation();
 		player->SetActorLocation(stunLocation);
+
 		player->SpawnStunBomb();
+		player->ServerStun();
 	}
 
 	if(destroyBox != nullptr)

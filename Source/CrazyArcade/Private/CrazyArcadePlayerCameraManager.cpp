@@ -10,11 +10,11 @@ void ACrazyArcadePlayerCameraManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto player = Cast<ACrazyArcadePlayer>(GetOwner());
+	/*auto player = Cast<ACrazyArcadePlayer>(GetOwner());
 
 	if (player)
 	{
 		SetViewTarget(player->MainCamera);
 		UE_LOG(LogTemp, Warning, TEXT("Camera Manager SetView"));
-	}
+	}*/
 }

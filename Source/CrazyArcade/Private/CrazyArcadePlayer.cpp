@@ -14,6 +14,7 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
@@ -55,10 +56,10 @@ void ACrazyArcadePlayer::BeginPlay()
 		}
 	}
 
-	if(HasAuthority())
+	/*if(HasAuthority())
 	{
 		ServerSpawnCamera();
-	}
+	}*/
 
 
 	// 캐릭터 색상 변경
@@ -94,21 +95,6 @@ void ACrazyArcadePlayer::BeginPlay()
 void ACrazyArcadePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (MainCamera != nullptr)
-	{
-		// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
-		auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
-
-		if (MainCamera)
-		{
-			if (playerController != nullptr)
-			{
-				playerController->SetViewTarget(MainCamera);
-				UE_LOG(LogTemp, Warning, TEXT("Camera SetView Tick"));
-			}
-		}
-	}
 
 	if (GetController() != nullptr && GetController()->IsLocalController())
 	{
@@ -179,9 +165,21 @@ void ACrazyArcadePlayer::ServerSpawnBomb_Implementation()
 	GetWorld()->SpawnActor<ABomb>(BombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());
 }
 
-void ACrazyArcadePlayer::Stun()
+void ACrazyArcadePlayer::ClientStun_Implementation()
 {
+	SpawnStunBomb();
+	ServerStun();
+}
 
+void ACrazyArcadePlayer::ServerStun_Implementation()
+{
+	SpawnStunBomb();
+	MulticastStun();
+}
+
+void ACrazyArcadePlayer::MulticastStun_Implementation()
+{
+	SpawnStunBomb();
 }
 
 void ACrazyArcadePlayer::SpawnStunBomb()
@@ -195,7 +193,11 @@ void ACrazyArcadePlayer::SpawnStunBomb()
 	FTimerHandle dieHandle;
 	GetWorldTimerManager().SetTimer(dieHandle, FTimerDelegate::CreateLambda([&]()->void
 	{
-		Destroy();
+		// Destroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetVisibility(false);
+		bIsDead = true;
 	}), 3.f, false, 3.f);
 }
 
@@ -260,66 +262,10 @@ void ACrazyArcadePlayer::ServerSetColor_Implementation(const FVector& color)
 
 void ACrazyArcadePlayer::MulticastSetColor_Implementation(const FVector& color)
 {
-	mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-	mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
-}
-
-void ACrazyArcadePlayer::MulticastSpawnCamera_Implementation()
-{
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
-
-	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
-	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
-
-
-	if (MainCamera)
+	if(mat1 != nullptr && mat2 != nullptr)
 	{
-		if(playerController != nullptr)
-		{
-			playerController->SetViewTarget(MainCamera);
-			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Multicast"));
-		}
-	}
-}
-
-void ACrazyArcadePlayer::ServerSpawnCamera_Implementation()
-{
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
-
-	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
-	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
-
-	
-	if (MainCamera)
-	{
-		if (playerController != nullptr)
-		{
-			playerController->SetViewTarget(MainCamera);
-			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Server"));
-		}
-	}
-
-	MulticastSpawnCamera();
-}
-
-void ACrazyArcadePlayer::ClientSpawnCamera_Implementation()
-{
-	MainCamera = Cast<AMainCamera>(GetWorld()->SpawnActor<ACameraActor>(CameraFactory));
-	MainCamera->SetActorLocationAndRotation(FVector(170.f, 650.f, 5450.f), FRotator(-90.f, 0.f, 0.f));
-
-	// auto playerController = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
-	auto playerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
-
-
-	if (MainCamera)
-	{
-		if (playerController != nullptr)
-		{
-			playerController->SetViewTarget(MainCamera);
-			UE_LOG(LogTemp, Warning, TEXT("Camera SetView Server"));
-		}
+		mat1->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
+		mat2->SetVectorParameterValue(FName("Tint"), (FLinearColor)color);
 	}
 }
 
