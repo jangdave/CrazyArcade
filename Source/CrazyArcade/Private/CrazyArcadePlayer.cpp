@@ -136,6 +136,29 @@ void ACrazyArcadePlayer::Move(const FInputActionValue& Value)
 
 void ACrazyArcadePlayer::SpawnBomb()
 {
+	if(HasAuthority())
+	{
+		float distnaceToNearest = 0.f;
+		AGridTile* NearestTile = FindNearstTile(GetActorLocation(), GridTiles, distnaceToNearest);
+		GetWorld()->SpawnActor<ABomb>(BombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());
+	}
+	else
+	{
+		ClientSpawnBomb();
+	}
+}
+
+void ACrazyArcadePlayer::ClientSpawnBomb_Implementation()
+{
+	float distnaceToNearest = 0.f;
+	AGridTile* NearestTile = FindNearstTile(GetActorLocation(), GridTiles, distnaceToNearest);
+	GetWorld()->SpawnActor<ABomb>(BombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());
+
+	ServerSpawnBomb();
+}
+
+void ACrazyArcadePlayer::ServerSpawnBomb_Implementation()
+{
 	float distnaceToNearest = 0.f;
 	AGridTile* NearestTile = FindNearstTile(GetActorLocation(), GridTiles, distnaceToNearest);
 	GetWorld()->SpawnActor<ABomb>(BombFactory, NearestTile->GetActorLocation(), NearestTile->GetActorRotation());

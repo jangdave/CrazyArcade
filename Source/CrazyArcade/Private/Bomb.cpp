@@ -93,7 +93,7 @@ void ABomb::OnBombPopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 
 	if(destroyBox != nullptr)
 	{
-		destroyBox->DestroyBox();
+		destroyBox->Destroy();
 	}
 
 	if(fixBox != nullptr)

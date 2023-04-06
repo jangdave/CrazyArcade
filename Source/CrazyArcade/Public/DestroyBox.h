@@ -37,4 +37,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Emitter")
 	class UParticleSystem* destroyEmitter;
+
+	virtual void Destroyed() override;
 };

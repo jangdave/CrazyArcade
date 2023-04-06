@@ -55,6 +55,12 @@ public:
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
 	void SpawnBomb();
+
+	UFUNCTION(Client, Unreliable)
+	void ClientSpawnBomb();
+	UFUNCTION(Server, Unreliable)
+	void ServerSpawnBomb();
+
 	UFUNCTION()
 	void Stun();
 	UFUNCTION()
