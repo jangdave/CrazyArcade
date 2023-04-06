@@ -44,6 +44,27 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UButton* btn_Player7;
 
+	UFUNCTION()
+	void Kick1();
+
+	UFUNCTION()
+	void Kick2();
+
+	UFUNCTION()
+	void Kick3();
+
+	UFUNCTION()
+	void Kick4();
+
+	UFUNCTION()
+	void Kick5();
+
+	UFUNCTION()
+	void Kick6();
+
+	UFUNCTION()
+	void Kick7();
+
 	// 네임 박스
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* text_Player0;

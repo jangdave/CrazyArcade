@@ -5,7 +5,7 @@
 #include "Bomb.h"
 #include "CrazyArcadePlayerController.h"
 #include "CrazyGameInstance.h"
-#include "CrazyLobbyPlayerState.h"
+#include "CrazyGameStateBase.h"
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
@@ -73,6 +73,7 @@ void ACrazyArcadePlayer::BeginPlay()
 	}
 	
 	gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
+	gs = Cast<ACrazyGameStateBase>(GetWorld()->GetGameState());
 	startCont = Cast<AStartWidgetController>(GetWorld()->GetFirstPlayerController());
 
 	// 플레이어 스테이트에 이름 저장
@@ -96,10 +97,21 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 	if (GetController() != nullptr && GetController()->IsLocalController())
 	{
 		ServerSetColor(gameInstance->setMatColor);
-
+		
 		if(startCont != nullptr)
 		{
-			ServerColor(gameInstance->setMatColor);
+			ServerColor(gameInstance->setMatColor, bCheckReady);
+		}
+	}
+
+	if(HasAuthority())
+	{
+		if(startCont != nullptr && startCont->lobbyWid != nullptr)
+		{
+			if (GetWorld()->GetGameState()->PlayerArray.Num() == gs->checkCount)
+			{
+				startCont->lobbyWid->btn_StartGame->SetIsEnabled(true);
+			}
 		}
 	}
 }
@@ -224,14 +236,14 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	return NearestTile;
 }
 
-void ACrazyArcadePlayer::ServerColor_Implementation(const FVector& color)
+void ACrazyArcadePlayer::ServerColor_Implementation(const FVector& color, bool bCheck)
 {
-	MulticastColor(color);
+	MulticastColor(color, bCheck);
 }
 
-void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color)
+void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color, bool bCheck)
 {
-	if (startCont->lobbyWid != nullptr)
+	if (startCont != nullptr && startCont->lobbyWid != nullptr)
 	{
 		for (int i = 0; i < startCont->lobbyWid->texts.Num(); i++)
 		{
@@ -239,13 +251,21 @@ void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color)
 			{
 				auto button = Cast<UButton>(startCont->lobbyWid->texts[i]->GetParent());
 
-				if(bCheckReady != true)
+				if(bCheck != true)
 				{
-					button->SetBackgroundColor((FLinearColor)color);
+					FLinearColor col = FLinearColor{ (float)color.X, (float)color.Y, (float)color.Z, 0.5f};
+					button->SetBackgroundColor(col);
 				}
 				else
 				{
-					
+					button->SetBackgroundColor((FLinearColor)color);
+
+					if(bOnce != true)
+					{
+						gs->checkCount++;
+
+						bOnce = true;
+					}
 				}
 			}
 		}
@@ -281,6 +301,73 @@ void ACrazyArcadePlayer::MulticastSetColor_Implementation(const FVector& color)
 	}
 }
 
+void ACrazyArcadePlayer::KickPlayer(const FString& text)
+{
+	if (HasAuthority())
+	{
+		for (TActorIterator<ACrazyArcadePlayer> pl(GetWorld()); pl; ++pl)
+		{
+			ACrazyArcadePlayer* p = *pl;
+
+			if (p->pName == text)
+			{
+				p->EndSession();
+			}
+		}
+	}
+}
+
+void ACrazyArcadePlayer::EndSession()
+{
+	// 레벨을 다시 처음 위치로 이동
+	AStartWidgetController* pc = Cast<AStartWidgetController>(GetController());
+	pc->ClientTravel(FString("/Game/Maps/StartMap'"), ETravelType::TRAVEL_Relative);
+}
+
+void ACrazyArcadePlayer::DestroyGame()
+{
+	if (HasAuthority())
+	{
+		for (TActorIterator<ACrazyArcadePlayer> pl(GetWorld()); pl; ++pl)
+		{
+			ACrazyArcadePlayer* p = *pl;
+
+			if (p != this)
+			{
+				p->ServerDestroyGame();
+			}
+		}
+		FTimerHandle testHandle;
+		GetWorldTimerManager().SetTimer(testHandle, this, &ACrazyArcadePlayer::EndGame, 1.0f, false);
+	}
+	else
+	{
+		EndGame();
+	}
+}
+
+void ACrazyArcadePlayer::EndGame()
+{
+	gameInstance->sesInterface->DestroySession(gameInstance->sessionID);
+
+	// 레벨을 다시 처음 위치로 이동
+	ACrazyArcadePlayerController* pc = Cast<ACrazyArcadePlayerController>(GetController());
+	pc->ClientTravel(FString("/Game/Maps/LobbyMap'"), ETravelType::TRAVEL_Relative);
+}
+
+void ACrazyArcadePlayer::ServerDestroyGame_Implementation()
+{
+	MulticastDestroyGame();
+}
+
+void ACrazyArcadePlayer::MulticastDestroyGame_Implementation()
+{
+	if (GetController() != nullptr && GetController()->IsLocalController())
+	{
+		EndGame();
+	}
+}
+
 void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -289,5 +376,4 @@ void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ACrazyArcadePlayer, mat2);
 	DOREPLIFETIME(ACrazyArcadePlayer, pName);
 	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReady);
-	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReadyList);
 }
