@@ -97,5 +97,8 @@ public:
 	class ACrazyLobbyPlayerState* pstate;
 
 	UFUNCTION(Server, Unreliable)
-	void ServerColor();
+	void ServerColor(const FVector& color);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastColor(const FVector& color);
 };

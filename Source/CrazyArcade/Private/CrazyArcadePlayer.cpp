@@ -107,7 +107,7 @@ void ACrazyArcadePlayer::Tick(float DeltaTime)
 
 		if(pstate != nullptr)
 		{
-			ServerColor();
+			ServerColor(gameInstance->setMatColor);
 		}
 	}
 }
@@ -193,12 +193,20 @@ AGridTile* ACrazyArcadePlayer::FindNearstTile(FVector Origin, const TArray<AGrid
 	return NearestTile;
 }
 
-void ACrazyArcadePlayer::ServerColor_Implementation()
+void ACrazyArcadePlayer::ServerColor_Implementation(const FVector& color)
 {
-	pstate->SetButtonColor = (FLinearColor)gameInstance->setMatColor;
-
-	UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), pstate->SetButtonColor.R, pstate->SetButtonColor.G, pstate->SetButtonColor.B)
 }
+
+void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color)
+{
+}
+
+//void ACrazyArcadePlayer::ServerColor_Implementation()
+//{
+//	pstate->SetButtonColor = (FLinearColor)gameInstance->setMatColor;
+
+//	UE_LOG(LogTemp, Warning, TEXT("%f / %f / %f"), pstate->SetButtonColor.R, pstate->SetButtonColor.G, pstate->SetButtonColor.B)
+//}
 
 void ACrazyArcadePlayer::ServerSetName_Implementation(const FString& name)
 {
