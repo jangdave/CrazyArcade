@@ -268,6 +268,14 @@ void ACrazyArcadePlayer::MulticastColor_Implementation(const FVector& color, boo
 					}
 				}
 			}
+			else if(gs->PlayerArray.Num() <= i)
+			{
+				auto button = Cast<UButton>(startCont->lobbyWid->texts[i]->GetParent());
+				
+				FLinearColor temp = FLinearColor{1, 1, 1, 1};
+
+				button->SetBackgroundColor(temp);
+			}
 		}
 	}
 }
@@ -312,6 +320,8 @@ void ACrazyArcadePlayer::KickPlayer(const FString& text)
 			if (p->pName == text)
 			{
 				p->EndSession();
+
+				p->bCheckReady = false;
 			}
 		}
 	}
@@ -319,9 +329,11 @@ void ACrazyArcadePlayer::KickPlayer(const FString& text)
 
 void ACrazyArcadePlayer::EndSession()
 {
+	gameInstance->sesInterface->EndSession(gameInstance->sessionID);
+	
 	// 레벨을 다시 처음 위치로 이동
 	AStartWidgetController* pc = Cast<AStartWidgetController>(GetController());
-	pc->ClientTravel(FString("/Game/Maps/StartMap'"), ETravelType::TRAVEL_Relative);
+	pc->ClientTravel(FString("/Game/Maps/LobbyMap'"), ETravelType::TRAVEL_Relative);
 }
 
 void ACrazyArcadePlayer::DestroyGame()

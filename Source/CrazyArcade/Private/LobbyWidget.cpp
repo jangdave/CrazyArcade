@@ -155,9 +155,18 @@ void ULobbyWidget::SetName()
 
 	playerArray.Sort([&](const APlayerState& a, const APlayerState& b) { return a.GetStartTime() < b.GetStartTime(); });
 			
-	for (int i = 0; i < playerArray.Num(); i++)
+	for(int i = 0; i < playerArray.Num(); i++)
 	{
 		texts[i]->SetText(FText::FromString(playerArray[i]->GetPlayerName()));
+
+	}
+
+	for(int n = 0; n < texts.Num(); n++)
+	{
+		if(playerArray.Num() <= n)
+		{
+			texts[n]->SetText(FText::FromString("--"));
+		}
 	}
 }
 
