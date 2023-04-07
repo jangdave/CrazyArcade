@@ -14,6 +14,7 @@
 #include "MainCamera.h"
 #include "StunBomb.h"
 #include "LobbyWidget.h"
+#include "ShowResultGameStateBase.h"
 #include "Components/CapsuleComponent.h"
 #include "StartWidgetController.h"
 #include "WinWidget.h"
@@ -76,6 +77,8 @@ void ACrazyArcadePlayer::BeginPlay()
 	
 	gameInstance = Cast<UCrazyGameInstance>(GetGameInstance());
 	startCont = Cast<AStartWidgetController>(GetWorld()->GetFirstPlayerController());
+	ShowResultState = Cast<AShowResultGameStateBase>(GetWorld()->GetGameState());
+	// WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetFactory);
 
 	// 플레이어 스테이트에 이름 저장
 	if(GetController() != nullptr && GetController()->IsLocalController())
@@ -88,11 +91,11 @@ void ACrazyArcadePlayer::BeginPlay()
 		GridTiles.Add(*itr);
 	}
 
-	if(HasAuthority())
+	/*if(HasAuthority())
 	{
 		PlayersNum = GetWorld()->GetGameState()->PlayerArray.Num();
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay PlayersNum: %d"), PlayersNum);
-	}
+	}*/
 }
 
 // Called every frame
@@ -125,13 +128,24 @@ void ACrazyArcadePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void ACrazyArcadePlayer::ServerWinWidget_Implementation()
 {
-	CreateWinWidget();
+	// CreateWinWidget();
+	FTimerHandle winTimer;
+	GetWorldTimerManager().SetTimer(winTimer, FTimerDelegate::CreateLambda([this]()->void
+		{
+			ShowResultState->WinWidget->AddToViewport();
+		}), 3.f, false);
 	MulticastWinWidget();
 }
 
 void ACrazyArcadePlayer::MulticastWinWidget_Implementation()
 {
-	CreateWinWidget();
+	//CreateWinWidget();
+
+	FTimerHandle winTimer;
+	GetWorldTimerManager().SetTimer(winTimer, FTimerDelegate::CreateLambda([this]()->void
+		{
+			ShowResultState->WinWidget->AddToViewport();
+		}), 3.f, false);
 }
 
 void ACrazyArcadePlayer::CreateWinWidget()
@@ -226,20 +240,16 @@ void ACrazyArcadePlayer::SpawnStunBomb()
 		bIsDead = true;
 	}), 3.f, false, 3.f);
 
+
 	if(HasAuthority())
 	{
-		PlayersNum--;
-		UE_LOG(LogTemp, Warning, TEXT("%d: PlayersNum"), PlayersNum);
+		ShowResultState->PlayersNum--;
 	}
-
-	WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetFactory);
-	if (WinWidget != nullptr)
+	UE_LOG(LogTemp, Warning, TEXT("%d: PlayersNum"), PlayersNum);
+	if (ShowResultState->PlayersNum <= 1)
 	{
-		if (PlayersNum <= 0)
-		{
-			ServerWinWidget();
-			// PlayersNum = 1;
-		}
+		PlayersNum = ShowResultState->PlayersNum;
+		ServerWinWidget();
 	}
 }
 

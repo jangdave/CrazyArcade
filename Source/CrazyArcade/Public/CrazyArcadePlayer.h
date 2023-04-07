@@ -51,8 +51,11 @@ public:
 	UPROPERTY()
 	class UWinWidget* WinWidget;
 
+	UPROPERTY()
+	class AShowResultGameStateBase* ShowResultState;
+
 	UPROPERTY(Replicated)
-	int32 PlayersNum;
+	int32 PlayersNum = 100;
 
 	UFUNCTION()
 	void CreateWinWidget();
