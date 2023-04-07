@@ -3,6 +3,7 @@
 
 #include "LobbyWidget.h"
 #include "CrazyArcadePlayer.h"
+#include "CrazyGameStateBase.h"
 #include "StartWidgetController.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -20,6 +21,8 @@ void ULobbyWidget::NativeConstruct()
 
 	if(player->HasAuthority())
 	{
+		btn_StartGame->SetIsEnabled(false);
+
 		btn_StartGame->OnClicked.AddDynamic(this, &ULobbyWidget::StartLevel);
 	}
 	else
@@ -52,13 +55,26 @@ void ULobbyWidget::NativeConstruct()
 	texts = { text_Player0, text_Player1, text_Player2, text_Player3, text_Player4, text_Player5, text_Player6, text_Player7 };
 
 	buttons = { btn_Player0, btn_Player1, btn_Player2, btn_Player3, btn_Player4, btn_Player5, btn_Player6, btn_Player7 };
+
+	// °­Åð ¹öÆ°
+	btn_Player0->SetIsEnabled(false);
+	btn_Player1->OnClicked.AddDynamic(this, &ULobbyWidget::Kick1);
+	btn_Player2->OnClicked.AddDynamic(this, &ULobbyWidget::Kick2);
+	btn_Player3->OnClicked.AddDynamic(this, &ULobbyWidget::Kick3);
+	btn_Player4->OnClicked.AddDynamic(this, &ULobbyWidget::Kick4);
+	btn_Player5->OnClicked.AddDynamic(this, &ULobbyWidget::Kick5);
+	btn_Player6->OnClicked.AddDynamic(this, &ULobbyWidget::Kick6);
+	btn_Player7->OnClicked.AddDynamic(this, &ULobbyWidget::Kick7);
 }
 
 void ULobbyWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	SetName();
+	if(GetWorld()->GetGameState() != nullptr)
+	{
+		SetName();
+	}
 
 }
 
@@ -69,7 +85,7 @@ void ULobbyWidget::StartLevel()
 
 void ULobbyWidget::BackLobby()
 {
-
+	player->EndSession();
 }
 
 void ULobbyWidget::ReadyGame()
@@ -135,10 +151,63 @@ void ULobbyWidget::SetColorBlack()
 
 void ULobbyWidget::SetName()
 {
-	auto array = GetWorld()->GetGameState()->PlayerArray;
+	auto playerArray = UGameplayStatics::GetGameState(GetWorld())->PlayerArray;
 
-	for (int i = 0; i < array.Num(); i++)
+	playerArray.Sort([&](const APlayerState& a, const APlayerState& b) { return a.GetStartTime() < b.GetStartTime(); });
+			
+	for(int i = 0; i < playerArray.Num(); i++)
 	{
-		texts[i]->SetText(FText::FromString(array[i]->GetPlayerName()));
+		texts[i]->SetText(FText::FromString(playerArray[i]->GetPlayerName()));
+
 	}
+
+	for(int n = 0; n < texts.Num(); n++)
+	{
+		if(playerArray.Num() <= n)
+		{
+			texts[n]->SetText(FText::FromString("--"));
+		}
+	}
+}
+
+void ULobbyWidget::Kick1()
+{
+	FString text = text_Player1->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick2()
+{
+	FString text = text_Player2->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick3()
+{
+	FString text = text_Player3->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick4()
+{
+	FString text = text_Player4->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick5()
+{
+	FString text = text_Player5->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick6()
+{
+	FString text = text_Player6->GetText().ToString();
+	player->KickPlayer(text);
+}
+
+void ULobbyWidget::Kick7()
+{
+	FString text = text_Player7->GetText().ToString();
+	player->KickPlayer(text);
 }

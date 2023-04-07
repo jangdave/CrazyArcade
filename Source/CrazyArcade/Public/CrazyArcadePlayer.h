@@ -115,14 +115,34 @@ public:
 	class AStartWidgetController* startCont;
 
 	UFUNCTION(Server, Unreliable)
-	void ServerColor(const FVector& color);
+	void ServerColor(const FVector& color, bool bCheck);
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastColor(const FVector& color);
+	void MulticastColor(const FVector& color, bool bCheck);
 
 	UPROPERTY(Replicated)
 	bool bCheckReady;
 
-	UPROPERTY(Replicated)
-	TArray<bool> bCheckReadyList;
+	bool bOnce;
+
+	class ACrazyGameStateBase* gs;
+
+	// 세션 종료
+	UFUNCTION()
+	void KickPlayer(const FString& text);
+
+	UFUNCTION()
+	void EndSession();
+
+	UFUNCTION()
+	void DestroyGame();
+
+	UFUNCTION()
+	void EndGame();
+
+	UFUNCTION(Server, Unreliable)
+	void ServerDestroyGame();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastDestroyGame();
 };

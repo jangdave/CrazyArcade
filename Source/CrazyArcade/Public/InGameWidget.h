@@ -36,8 +36,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* Text_Player7;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	class UButton* btn_Quit;
+
 	TArray<UTextBlock*> playerNames;
 
 	UFUNCTION()
 	void SetName();
+
+	UFUNCTION()
+	void QuitGame();
+
+	class ACrazyArcadePlayer* player;
 };
