@@ -418,8 +418,12 @@ void ACrazyArcadePlayer::EndGame()
 	gameInstance->sesInterface->DestroySession(gameInstance->sessionID);
 
 	// 레벨을 다시 처음 위치로 이동
-	ACrazyArcadePlayerController* pc = Cast<ACrazyArcadePlayerController>(GetController());
-	pc->ClientTravel(FString("/Game/Maps/LobbyMap'"), ETravelType::TRAVEL_Relative);
+	ACrazyArcadePlayerController* pc = Cast<ACrazyArcadePlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if(pc != nullptr)
+	{
+		pc->ClientTravel(FString("/Game/Maps/LobbyMap'"), ETravelType::TRAVEL_Relative);
+	}
 }
 
 void ACrazyArcadePlayer::ServerDestroyGame_Implementation()
@@ -443,6 +447,5 @@ void ACrazyArcadePlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ACrazyArcadePlayer, mat2);
 	DOREPLIFETIME(ACrazyArcadePlayer, pName);
 	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReady);
-	DOREPLIFETIME(ACrazyArcadePlayer, bCheckReadyList);
 	DOREPLIFETIME(ACrazyArcadePlayer, PlayersNum);
 }

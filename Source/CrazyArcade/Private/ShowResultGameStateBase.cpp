@@ -43,45 +43,45 @@ void AShowResultGameStateBase::Tick(float DeltaSeconds)
 
 void AShowResultGameStateBase::SetResult()
 {
-	auto players = UGameplayStatics::GetGameState(GetWorld())->PlayerArray;
+	// auto players = UGameplayStatics::GetGameState(GetWorld())->PlayerArray;
 	
 	
-	if(WinWidget == nullptr)
-	{
-		return;
-	}
+	//if(WinWidget == nullptr)
+	//{
+	//	return;
+	//}
 
-	if (!players.IsEmpty() && HasAuthority())
-	{
-		for (int i = 0; i < players.Num(); i++)
-		{
-			WinWidget->Names[i]->SetText(FText::FromString(FString("aa")));//players[i]->GetPlayerName()));
-		}
-		
-		for (int i = 0; i < players.Num(); i++)
-		{
-			auto playerController = Cast<ACrazyArcadePlayerController>(players[i]->GetOwningController());
-			if (playerController != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Result Has Controller"));
-				auto player = Cast<ACrazyArcadePlayer>(playerController->GetPawn());
-				// auto player = Cast<ACrazyArcadePlayer>(GetOwner());
-				if (player != nullptr)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Result Has Player"));
+	//if (!players.IsEmpty() && HasAuthority())
+	//{
+	//	for (int i = 0; i < players.Num(); i++)
+	//	{
+	//		WinWidget->Names[i]->SetText(FText::FromString(FString("aa")));//players[i]->GetPlayerName()));
+	//	}
+	//	
+	//	for (int i = 0; i < players.Num(); i++)
+	//	{
+	//		auto playerController = Cast<ACrazyArcadePlayerController>(players[i]->GetOwningController());
+	//		if (playerController != nullptr)
+	//		{
+	//			UE_LOG(LogTemp, Warning, TEXT("Result Has Controller"));
+	//			auto player = Cast<ACrazyArcadePlayer>(playerController->GetPawn());
+	//			// auto player = Cast<ACrazyArcadePlayer>(GetOwner());
+	//			if (player != nullptr)
+	//			{
+	//				UE_LOG(LogTemp, Warning, TEXT("Result Has Player"));
 
-					if (player->bIsDead)
-					{
-						WinWidget->Results[i]->SetText(FText::FromString(FString("Lose")));
-						WinWidget->text_PlayerWinLose->SetText(FText::FromString(FString("Lose")));
-					}
-					else
-					{
-						WinWidget->Results[i]->SetText(FText::FromString(FString("Win")));
-						WinWidget->text_PlayerWinLose->SetText(FText::FromString(FString("Win")));
-					}
-				}
-			}
-		}
-	}
+	//				if (player->bIsDead)
+	//				{
+	//					WinWidget->Results[i]->SetText(FText::FromString(FString("Lose")));
+	//					WinWidget->text_PlayerWinLose->SetText(FText::FromString(FString("Lose")));
+	//				}
+	//				else
+	//				{
+	//					WinWidget->Results[i]->SetText(FText::FromString(FString("Win")));
+	//					WinWidget->text_PlayerWinLose->SetText(FText::FromString(FString("Win")));
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }
